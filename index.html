@@ -41,11 +41,11 @@
     .nav.light .nav-phone { color: var(--muted); }
     .nav.light .nav-phone:hover { color: var(--green); }
     .nav.scrolled { box-shadow: var(--shadow); }
-    .nav-logo { display: flex; align-items: center; gap: 9px; text-decoration: none; }
-    .logo-mark { width: 34px; height: 34px; border-radius: 9px; background: var(--green); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .logo-mark svg { width: 18px; height: 18px; }
-    .logo-type { font-size: 1.25rem; font-weight: 800; color: rgba(255,255,255,0.9); letter-spacing: -0.03em; }
-    .logo-type span { color: var(--green-200); }
+    .nav-logo { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-decoration: none; }
+    .nav-logo-main { display: flex; align-items: center; gap: 10px; }
+    .logo-mark { height: 32px; width: auto; display: block; flex-shrink: 0; }
+    .logo-type { height: 22px; width: auto; display: block; }
+    .logo-venture { height: 10px; width: auto; display: block; opacity: 0.7; margin-left: 42px; }
     .nav-right { display: flex; align-items: center; gap: 12px; }
     .nav-phone { font-size: 0.85rem; font-weight: 600; color: rgba(255,255,255,0.5); text-decoration: none; transition: color 200ms ease; }
     .nav-phone:hover { color: var(--green-200); }
@@ -323,10 +323,11 @@
 <!-- NAV -->
 <nav class="nav" id="nav">
   <a href="index.html" class="nav-logo" aria-label="Neuhom home">
-    <div class="logo-mark" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <div class="nav-logo-main">
+      <img src="logomark.svg" class="logo-mark" alt="" aria-hidden="true"/>
+      <img src="logotype.svg" class="logo-type" alt="Neuhom"/>
     </div>
-    <span class="logo-type">Neu<span>hom</span></span>
+    <img src="camboj-venture.svg" class="logo-venture" alt="A Camboj Venture"/>
   </a>
   <div class="nav-right">
     <a href="tel:+918376958021" class="nav-phone">+91 83769 58021</a>
@@ -969,9 +970,12 @@
   <div class="footer-inner">
     <div class="footer-top">
       <div class="footer-brand">
-        <div class="footer-logo">
-          <div class="logo-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
-          <span class="logo-type">Neu<span>hom</span></span>
+        <div class="footer-logo" style="flex-direction:column; align-items:flex-start; gap:4px;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <img src="logomark.svg" style="height:28px; width:auto;" alt="" aria-hidden="true"/>
+            <img src="logotype.svg" style="height:20px; width:auto;" alt="Neuhom"/>
+          </div>
+          <img src="camboj-venture.svg" style="height:9px; width:auto; opacity:0.55; margin-left:38px;" alt="A Camboj Venture"/>
         </div>
         <p>Your trusted home improvement platform — serving homeowners across India.</p>
       </div>
