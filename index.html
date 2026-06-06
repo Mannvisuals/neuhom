@@ -36,13 +36,13 @@
       transition: background 300ms ease, box-shadow 200ms ease;
     }
     .nav.light { background: rgba(255,255,255,0.93); border-bottom-color: var(--border); }
-    .nav.light .logo-type { color: var(--charcoal); }
-    .nav.light .logo-type span { color: var(--green); }
     .nav.light .nav-phone { color: var(--muted); }
     .nav.light .nav-phone:hover { color: var(--green); }
+    /* Darken logo for light navbar — keeps contrast without full inversion */
+    .nav.light .logo-full { filter: brightness(0) saturate(1); }
     .nav.scrolled { box-shadow: var(--shadow); }
     .nav-logo { display: flex; align-items: center; text-decoration: none; }
-    .logo-full { height: 36px; width: auto; display: block; }
+    .logo-full { height: 32px; width: auto; display: block; }
     .nav-right { display: flex; align-items: center; gap: 12px; }
     .nav-phone { font-size: 0.85rem; font-weight: 600; color: rgba(255,255,255,0.5); text-decoration: none; transition: color 200ms ease; }
     .nav-phone:hover { color: var(--green-200); }
@@ -294,8 +294,8 @@
       .nav { padding: 0 16px; }
       .nav-phone { display: none; }
       .hero-inner { grid-template-columns: 1fr; padding: 48px 20px 24px; }
-      .hero-blueprint { display: flex; justify-content: center; width: 100%; margin-top: 8px; }
-      .house-svg { max-width: 340px; width: 100%; }
+      .hero-blueprint { display: flex; justify-content: center; align-items: center; width: 100%; margin: 12px auto 0; }
+      .house-svg { width: 92vw; max-width: 480px; height: auto; display: block; margin: 0 auto; }
       .service-selector { padding: 0; }
       .section { padding: 72px 20px; }
       .services-grid { grid-template-columns: repeat(2,1fr); }
@@ -320,7 +320,7 @@
 <!-- NAV -->
 <nav class="nav" id="nav">
   <a href="index.html" class="nav-logo" aria-label="Neuhom home">
-    <img src="logo-full.svg" class="logo-full" alt="Neuhom"/>
+    <img src="logotype.svg" class="logo-full" alt="Neuhom"/>
   </a>
   <div class="nav-right">
     <a href="tel:+918376958021" class="nav-phone">+91 83769 58021</a>
@@ -964,7 +964,7 @@
     <div class="footer-top">
       <div class="footer-brand">
         <div class="footer-logo">
-          <img src="logo-full.svg" style="height:32px; width:auto;" alt="Neuhom"/>
+          <img src="logotype.svg" style="height:26px; width:auto;" alt="Neuhom"/>
         </div>
         <p>Your trusted home improvement platform — serving homeowners across India.</p>
       </div>
@@ -977,7 +977,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <img src="camboj-venture.svg" style="height:11px; width:auto; opacity:0.35; margin-bottom:6px;" alt="A Camboj Venture"/>
+      <img src="camboj-venture.svg" style="height:16px; width:auto; opacity:0.45; margin-bottom:6px;" alt="A Camboj Venture"/>
       <p class="footer-copy">&copy; 2025 Neuhom. All rights reserved.</p>
     </div>
   </div>
