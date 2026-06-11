@@ -913,7 +913,55 @@
           <div class="form-group"><label for="hb-phone">Phone Number</label><input type="tel" id="hb-phone" name="phone" placeholder="+91 XXXXX XXXXX" required autocomplete="tel"/></div>
         </div>
         <div class="form-row full">
-          <div class="form-group"><label for="hb-city">City</label><input type="text" id="hb-city" name="city" placeholder="Your city" required/></div>
+          <div class="form-group">
+            <label for="hb-locality">Area / Locality</label>
+            <input type="text" id="hb-locality" name="locality" placeholder="Search your area or locality…" required autocomplete="off" list="locality-list"/>
+            <datalist id="locality-list">
+              <option value="Dwarka Sector 1–23"></option>
+              <option value="Janakpuri"></option>
+              <option value="Uttam Nagar"></option>
+              <option value="Vikaspuri"></option>
+              <option value="Tilak Nagar"></option>
+              <option value="Subhash Nagar"></option>
+              <option value="Rajouri Garden"></option>
+              <option value="Punjabi Bagh"></option>
+              <option value="Paschim Vihar"></option>
+              <option value="Peeragarhi"></option>
+              <option value="Moti Nagar"></option>
+              <option value="Kirti Nagar"></option>
+              <option value="Ramesh Nagar"></option>
+              <option value="Tagore Garden"></option>
+              <option value="Mayapuri"></option>
+              <option value="Naraina"></option>
+              <option value="Dabri"></option>
+              <option value="Palam"></option>
+              <option value="Dashrath Puri"></option>
+              <option value="Bindapur"></option>
+              <option value="Nawada"></option>
+              <option value="Rohini"></option>
+              <option value="Pitampura"></option>
+              <option value="Shalimar Bagh"></option>
+              <option value="Ashok Vihar"></option>
+              <option value="Model Town"></option>
+              <option value="Saket"></option>
+              <option value="Malviya Nagar"></option>
+              <option value="Greater Kailash"></option>
+              <option value="Vasant Kunj"></option>
+              <option value="Vasant Vihar"></option>
+              <option value="Hauz Khas"></option>
+              <option value="Green Park"></option>
+              <option value="Lajpat Nagar"></option>
+              <option value="Defence Colony"></option>
+              <option value="Mayur Vihar"></option>
+              <option value="Preet Vihar"></option>
+              <option value="Laxmi Nagar"></option>
+              <option value="Patparganj"></option>
+              <option value="Gurugram"></option>
+              <option value="Noida"></option>
+              <option value="Faridabad"></option>
+              <option value="Ghaziabad"></option>
+            </datalist>
+          </div>
         </div>
         <div class="form-row full">
           <div class="form-group">
@@ -966,7 +1014,7 @@
         <div class="footer-logo">
           <img src="logotype.svg" style="height:36px; width:auto;" alt="Neuhom"/>
         </div>
-        <p>Your trusted home improvement platform — serving homeowners across India.</p>
+        <p>Your trusted home improvement platform — serving homeowners across Delhi NCR.</p>
       </div>
       <div class="footer-contact">
         <p>Get in touch</p>
@@ -1041,7 +1089,7 @@
       phone:   document.getElementById('hb-phone').value.trim(),
       service: document.getElementById('hb-service').value,
       date:    document.getElementById('hb-slot').value,
-      message: document.getElementById('hb-city').value.trim()
+      message: document.getElementById('hb-locality').value.trim()
     };
 
     try {

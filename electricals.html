@@ -473,7 +473,7 @@
           Which cities do you currently operate in?
           <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </button>
-        <div class="faq-a" id="faq-a2" role="region"><div class="faq-a-inner">We're currently expanding across major Indian cities. When you submit a request, we'll confirm availability in your area via WhatsApp. If we're not in your city yet, you'll be the first to know when we launch there.</div></div>
+        <div class="faq-a" id="faq-a2" role="region"><div class="faq-a-inner">We're currently serving Delhi NCR, with a focus on West Delhi. When you submit a request, we'll confirm availability in your area. If we're not in your locality yet, you'll be the first to know when we expand there.</div></div>
       </div>
       <div class="faq-item" role="listitem">
         <button class="faq-q" aria-expanded="false" aria-controls="faq-a3">
@@ -527,7 +527,55 @@
           <div class="form-group"><label for="phone">Phone Number</label><input type="tel" id="phone" name="phone" placeholder="+91 XXXXX XXXXX" required autocomplete="tel"/></div>
         </div>
         <div class="form-row full">
-          <div class="form-group"><label for="locality">Area / Locality</label><input type="text" id="locality" name="locality" placeholder="Your neighbourhood or locality" required/></div>
+          <div class="form-group">
+            <label for="locality">Area / Locality</label>
+            <input type="text" id="locality" name="locality" placeholder="Search your area or locality…" required autocomplete="off" list="locality-list"/>
+            <datalist id="locality-list">
+              <option value="Dwarka Sector 1–23"></option>
+              <option value="Janakpuri"></option>
+              <option value="Uttam Nagar"></option>
+              <option value="Vikaspuri"></option>
+              <option value="Tilak Nagar"></option>
+              <option value="Subhash Nagar"></option>
+              <option value="Rajouri Garden"></option>
+              <option value="Punjabi Bagh"></option>
+              <option value="Paschim Vihar"></option>
+              <option value="Peeragarhi"></option>
+              <option value="Moti Nagar"></option>
+              <option value="Kirti Nagar"></option>
+              <option value="Ramesh Nagar"></option>
+              <option value="Tagore Garden"></option>
+              <option value="Mayapuri"></option>
+              <option value="Naraina"></option>
+              <option value="Dabri"></option>
+              <option value="Palam"></option>
+              <option value="Dashrath Puri"></option>
+              <option value="Bindapur"></option>
+              <option value="Nawada"></option>
+              <option value="Rohini"></option>
+              <option value="Pitampura"></option>
+              <option value="Shalimar Bagh"></option>
+              <option value="Ashok Vihar"></option>
+              <option value="Model Town"></option>
+              <option value="Saket"></option>
+              <option value="Malviya Nagar"></option>
+              <option value="Greater Kailash"></option>
+              <option value="Vasant Kunj"></option>
+              <option value="Vasant Vihar"></option>
+              <option value="Hauz Khas"></option>
+              <option value="Green Park"></option>
+              <option value="Lajpat Nagar"></option>
+              <option value="Defence Colony"></option>
+              <option value="Mayur Vihar"></option>
+              <option value="Preet Vihar"></option>
+              <option value="Laxmi Nagar"></option>
+              <option value="Patparganj"></option>
+              <option value="Gurugram"></option>
+              <option value="Noida"></option>
+              <option value="Faridabad"></option>
+              <option value="Ghaziabad"></option>
+            </datalist>
+          </div>
         </div>
         <div class="form-row full">
           <div class="form-group">
@@ -579,7 +627,7 @@
         <div class="footer-logo">
           <img src="logotype.svg" style="height:32px; width:auto;" alt="Neuhom"/>
         </div>
-        <p>Expert electrical services for homes across India — verified, on-time, and hassle-free.</p>
+        <p>Expert electrical services for homes across Delhi NCR — verified, on-time, and hassle-free.</p>
       </div>
       <div class="footer-contact">
         <p>Get in touch</p>
