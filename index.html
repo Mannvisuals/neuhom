@@ -251,6 +251,14 @@
     .form-group input::placeholder { color: rgba(255,255,255,0.25); }
     .form-group input:focus, .form-group select:focus { border-color: var(--green); background: rgba(255,255,255,0.1); }
     .form-group select option { background: var(--charcoal-2); color: var(--white); }
+    /* Locality dropdown */
+    .locality-wrap { position: relative; }
+    .locality-dropdown { display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: #0f2318; border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; max-height: 240px; overflow-y: auto; z-index: 100; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+    .locality-dropdown.open { display: block; }
+    .locality-zone { padding: 8px 14px 4px; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green); }
+    .locality-option { padding: 9px 14px; font-size: 0.88rem; color: rgba(255,255,255,0.8); cursor: pointer; transition: background 150ms ease; }
+    .locality-option:hover, .locality-option.active { background: rgba(255,255,255,0.07); color: #fff; }
+    .locality-no-results { padding: 12px 14px; font-size: 0.88rem; color: rgba(255,255,255,0.35); }
     .form-submit { width: 100%; margin-top: 8px; background: var(--green); color: var(--white); font-family: inherit; font-size: 1rem; font-weight: 700; padding: 15px; border: none; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 200ms ease, transform 150ms ease, box-shadow 200ms ease; box-shadow: 0 4px 20px rgba(5,150,105,0.25); }
     .form-submit:hover { background: var(--green-dark); transform: translateY(-1px); box-shadow: 0 8px 28px rgba(5,150,105,0.35); }
     .form-submit:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
@@ -913,54 +921,10 @@
           <div class="form-group"><label for="hb-phone">Phone Number</label><input type="tel" id="hb-phone" name="phone" placeholder="+91 XXXXX XXXXX" required autocomplete="tel"/></div>
         </div>
         <div class="form-row full">
-          <div class="form-group">
+          <div class="form-group locality-wrap" id="hb-locality-wrap">
             <label for="hb-locality">Area / Locality</label>
-            <input type="text" id="hb-locality" name="locality" placeholder="Search your area or locality…" required autocomplete="off" list="locality-list"/>
-            <datalist id="locality-list">
-              <option value="Dwarka Sector 1–23"></option>
-              <option value="Janakpuri"></option>
-              <option value="Uttam Nagar"></option>
-              <option value="Vikaspuri"></option>
-              <option value="Tilak Nagar"></option>
-              <option value="Subhash Nagar"></option>
-              <option value="Rajouri Garden"></option>
-              <option value="Punjabi Bagh"></option>
-              <option value="Paschim Vihar"></option>
-              <option value="Peeragarhi"></option>
-              <option value="Moti Nagar"></option>
-              <option value="Kirti Nagar"></option>
-              <option value="Ramesh Nagar"></option>
-              <option value="Tagore Garden"></option>
-              <option value="Mayapuri"></option>
-              <option value="Naraina"></option>
-              <option value="Dabri"></option>
-              <option value="Palam"></option>
-              <option value="Dashrath Puri"></option>
-              <option value="Bindapur"></option>
-              <option value="Nawada"></option>
-              <option value="Rohini"></option>
-              <option value="Pitampura"></option>
-              <option value="Shalimar Bagh"></option>
-              <option value="Ashok Vihar"></option>
-              <option value="Model Town"></option>
-              <option value="Saket"></option>
-              <option value="Malviya Nagar"></option>
-              <option value="Greater Kailash"></option>
-              <option value="Vasant Kunj"></option>
-              <option value="Vasant Vihar"></option>
-              <option value="Hauz Khas"></option>
-              <option value="Green Park"></option>
-              <option value="Lajpat Nagar"></option>
-              <option value="Defence Colony"></option>
-              <option value="Mayur Vihar"></option>
-              <option value="Preet Vihar"></option>
-              <option value="Laxmi Nagar"></option>
-              <option value="Patparganj"></option>
-              <option value="Gurugram"></option>
-              <option value="Noida"></option>
-              <option value="Faridabad"></option>
-              <option value="Ghaziabad"></option>
-            </datalist>
+            <input type="text" id="hb-locality" name="locality" placeholder="Search your area or locality…" required autocomplete="off"/>
+            <div class="locality-dropdown" id="hb-locality-dropdown" role="listbox" aria-label="Localities"></div>
           </div>
         </div>
         <div class="form-row full">
@@ -1079,6 +1043,49 @@
   const homeForm = document.getElementById('home-form');
   const hbSuccess = document.getElementById('hb-success');
   const hbSubmit = document.getElementById('hb-submit');
+  // ── Locality searchable dropdown ──
+  const LOCALITIES = {
+    'West Delhi':  ['Dwarka','Janakpuri','Uttam Nagar','Vikaspuri','Tilak Nagar','Subhash Nagar','Rajouri Garden','Punjabi Bagh','Paschim Vihar','Peeragarhi','Moti Nagar','Kirti Nagar','Ramesh Nagar','Tagore Garden','Mayapuri','Naraina','Dabri','Palam','Dashrath Puri','Bindapur','Nawada'],
+    'North Delhi': ['Rohini','Pitampura','Shalimar Bagh','Ashok Vihar','Model Town','Wazirabad','Burari','Shakurpur','Saraswati Vihar'],
+    'South Delhi': ['Saket','Malviya Nagar','Greater Kailash','Vasant Kunj','Vasant Vihar','Hauz Khas','Green Park','Munirka','RK Puram','Lajpat Nagar','Defence Colony','Nehru Place'],
+    'East Delhi':  ['Mayur Vihar','Preet Vihar','Laxmi Nagar','Vivek Vihar','Patparganj','Shahdara','Dilshad Garden','Anand Vihar'],
+    'NCR':         ['Gurugram','Noida','Faridabad','Ghaziabad','Greater Noida','Dwarka Expressway']
+  };
+  initLocalityDropdown('hb-locality', 'hb-locality-dropdown');
+  function initLocalityDropdown(inputId, dropdownId) {
+    const input = document.getElementById(inputId);
+    const dropdown = document.getElementById(dropdownId);
+    if (!input || !dropdown) return;
+    function render(query) {
+      dropdown.innerHTML = '';
+      const q = query.toLowerCase().trim();
+      let hasResults = false;
+      for (const [zone, items] of Object.entries(LOCALITIES)) {
+        const filtered = q ? items.filter(i => i.toLowerCase().includes(q)) : items;
+        if (!filtered.length) continue;
+        hasResults = true;
+        const zoneEl = document.createElement('div');
+        zoneEl.className = 'locality-zone'; zoneEl.textContent = zone;
+        dropdown.appendChild(zoneEl);
+        filtered.forEach(item => {
+          const opt = document.createElement('div');
+          opt.className = 'locality-option'; opt.textContent = item; opt.setAttribute('role','option');
+          opt.addEventListener('mousedown', e => { e.preventDefault(); input.value = item; dropdown.classList.remove('open'); });
+          dropdown.appendChild(opt);
+        });
+      }
+      if (!hasResults) {
+        const el = document.createElement('div');
+        el.className = 'locality-no-results'; el.textContent = 'No matching area — try a different name';
+        dropdown.appendChild(el);
+      }
+      dropdown.classList.add('open');
+    }
+    input.addEventListener('focus', () => render(input.value));
+    input.addEventListener('input', () => render(input.value));
+    document.addEventListener('click', e => { if (!input.contains(e.target) && !dropdown.contains(e.target)) dropdown.classList.remove('open'); });
+  }
+
   homeForm.addEventListener('submit', async e => {
     e.preventDefault();
     hbSubmit.disabled = true;
