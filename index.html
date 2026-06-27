@@ -39,12 +39,12 @@
     .nav.light .nav-phone { color: var(--muted); }
     .nav.light .nav-phone:hover { color: var(--green); }
     /* Darken logo for light navbar — keeps contrast without full inversion */
-    .logo-light-bg { display: none; }
-    .nav.light .logo-dark-bg { display: none; }
-    .nav.light .logo-light-bg { display: block; }
     .nav.scrolled { box-shadow: var(--shadow); }
     .nav-logo { display: flex; align-items: center; text-decoration: none; }
-    .logo-dark-bg, .logo-light-bg { height: 32px; width: auto; display: block; }
+    .logo-dark-bg { height: 32px; width: auto; display: block; }
+    .logo-light-bg { height: 32px; width: auto; display: none; }
+    .nav.light .logo-dark-bg { display: none; }
+    .nav.light .logo-light-bg { display: block; }
     .nav-right { display: flex; align-items: center; gap: 12px; }
     .nav-phone { font-size: 0.85rem; font-weight: 600; color: rgba(255,255,255,0.5); text-decoration: none; transition: color 200ms ease; }
     .nav-phone:hover { color: var(--green-200); }
