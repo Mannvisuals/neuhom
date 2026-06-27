@@ -31,13 +31,16 @@
     .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; height: 64px; background: rgba(255,255,255,0.93); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); padding: 0 32px; display: flex; align-items: center; justify-content: space-between; transition: box-shadow 200ms ease; }
     .nav.scrolled { box-shadow: var(--shadow); }
     .nav-logo { display: flex; align-items: center; text-decoration: none; }
-    .logo-full { height: 30px; width: auto; display: block; filter: brightness(0); }
+    .logo-full { height: 30px; width: auto; display: block; }
     .nav-right { display: flex; align-items: center; gap: 12px; }
     .nav-back { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 600; color: var(--muted); text-decoration: none; transition: color 200ms ease; }
     .nav-back:hover { color: var(--green); }
     .nav-back svg { width: 14px; height: 14px; }
+    .nav-back-text { display: inline; }
     .nav-cta { background: var(--green); color: var(--white); font-size: 0.875rem; font-weight: 700; padding: 9px 20px; border-radius: 8px; text-decoration: none; white-space: nowrap; transition: background 200ms ease, transform 150ms ease; cursor: pointer; }
     .nav-cta:hover { background: var(--green-dark); transform: translateY(-1px); }
+    .nav-cta-short { display: none; }
+    .nav-cta-long { display: inline; }
 
     /* ── PAGE HERO ── */
     .page-hero { padding-top: 64px; background: var(--green-deep); position: relative; overflow: hidden; }
@@ -228,6 +231,10 @@
     @media (max-width: 900px) { .booking-inner { grid-template-columns: 1fr; gap: 40px; } .booking-info { position: static; } }
     @media (max-width: 768px) {
       .nav { padding: 0 16px; }
+      .nav-back-text { display: none; }
+      .nav-cta-long { display: none; }
+      .nav-cta-short { display: inline; }
+      .nav-cta { padding: 9px 14px; }
       .section { padding: 72px 20px; }
       #booking { padding: 72px 20px; }
       .page-hero-inner { grid-template-columns: 1fr; }
@@ -255,11 +262,11 @@
 <!-- NAV -->
 <nav class="nav" id="nav">
   <a href="index.html" class="nav-logo" aria-label="Neuhom home">
-    <img src="logotype.svg" class="logo-full" alt="Neuhom"/>
+    <img src="logotype-dark.svg" class="logo-full" alt="Neuhom"/>
   </a>
   <div class="nav-right">
-    <a href="index.html" class="nav-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>All Services</a>
-    <a href="https://wa.me/919063616060?text=Hi%2C%20I%20am%20looking%20for%20an%20Electrician." class="nav-cta" target="_blank" rel="noopener">Book Free Consultation</a>
+    <a href="index.html" class="nav-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg><span class="nav-back-text">All Services</span></a>
+    <a href="https://wa.me/919063616060?text=Hi%2C%20I%20am%20looking%20for%20an%20Electrician." class="nav-cta" target="_blank" rel="noopener"><span class="nav-cta-long">Book Free Consultation</span><span class="nav-cta-short">Book Now</span></a>
   </div>
 </nav>
 
