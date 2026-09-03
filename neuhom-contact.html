@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Neuhom Lighting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0d0d0e;--surface:#161618;--gold:#e9a95b;--text:#fff;--muted:rgba(255,255,255,0.7);--border:rgba(255,255,255,0.08)}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+img{display:block;max-width:100%}
+
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 80px;background:transparent;transition:padding 400ms ease,background 400ms ease,box-shadow 400ms ease,border-color 400ms ease;border-bottom:1px solid transparent}
+.nav.scrolled{padding:12px 80px;background:rgba(22,22,24,0.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);box-shadow:0 4px 32px rgba(0,0,0,0.4)}
+.nav-brand{display:flex;flex-direction:column;gap:0;align-items:flex-start}
+.nav-links{display:flex;gap:40px;list-style:none}
+.nav-links a{color:var(--muted);font-size:14px;font-weight:500;transition:color 200ms}
+.nav-links a:hover{color:var(--text)}
+.nav-links a.active{color:var(--gold);font-weight:700}
+.btn-wa{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:#0d0d0e;font-size:14px;font-weight:600;padding:12px 24px;border-radius:4px;transition:opacity 200ms;white-space:nowrap}
+.btn-wa:hover{opacity:0.88}
+
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 640ms cubic-bezier(.22,.68,0,1.1),transform 640ms cubic-bezier(.22,.68,0,1.1)}
+.reveal.d1{transition-delay:80ms}.reveal.d2{transition-delay:160ms}.reveal.d3{transition-delay:240ms}.reveal.d4{transition-delay:320ms}
+.reveal.up{opacity:1;transform:none}
+
+.eyebrow{display:flex;align-items:center;gap:8px}
+.eyebrow-dot{width:6px;height:6px;border-radius:3px;background:var(--gold);flex-shrink:0}
+.eyebrow-label{font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em}
+.headline .line1{font-size:30px;font-weight:700;line-height:1.2;display:block}
+.headline .line2{font-size:48px;font-weight:400;font-style:italic;font-family:'Playfair Display',serif;line-height:1.15;display:block}
+.section-head{display:flex;flex-direction:column;gap:16px}
+
+/* PAGE HEADER */
+.page-header{padding:180px 80px 100px;background:var(--bg)}
+.page-header-inner{max-width:800px;display:flex;flex-direction:column;gap:16px}
+
+/* CONTACT MAIN */
+.contact-main{background:var(--surface);padding:80px}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;max-width:1100px}
+
+/* CTA BLOCK */
+.cta-block{display:flex;flex-direction:column;gap:32px}
+.cta-desc{font-size:16px;color:var(--muted);line-height:1.7;max-width:420px}
+.wa-btn-large{display:inline-flex;align-items:center;gap:16px;background:var(--gold);color:#0d0d0e;font-size:16px;font-weight:700;padding:20px 32px;border-radius:4px;transition:opacity 200ms}
+.wa-btn-large:hover{opacity:0.88}
+.wa-label{display:flex;flex-direction:column;align-items:flex-start}
+.wa-label span:first-child{font-size:16px;font-weight:700}
+.wa-label span:last-child{font-size:12px;font-weight:500;opacity:0.7}
+.secondary-actions{display:flex;flex-direction:column;gap:12px}
+.secondary-action{display:flex;align-items:center;gap:14px;padding:16px 20px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:4px;transition:border-color 200ms}
+.secondary-action:hover{border-color:rgba(255,255,255,0.2)}
+.secondary-action-icon{width:36px;height:36px;background:rgba(233,169,91,0.1);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.secondary-action-icon svg{stroke:var(--gold)}
+.secondary-action-body{display:flex;flex-direction:column;gap:2px}
+.secondary-action-label{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em}
+.secondary-action-value{font-size:14px;color:var(--text)}
+.secondary-action-sub{font-size:12px;color:var(--muted)}
+
+/* INFO PANEL */
+.info-panel{display:flex;flex-direction:column;gap:40px}
+.info-card{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:32px;display:flex;flex-direction:column;gap:20px}
+.info-card-title{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em}
+.info-card-body{font-size:14px;color:var(--muted);line-height:1.7}
+.info-card-body strong{color:var(--text);font-weight:600}
+.hours-row{display:flex;justify-content:space-between;font-size:14px;padding:10px 0;border-bottom:1px solid var(--border)}
+.hours-row:last-child{border-bottom:none}
+.hours-row span:first-child{color:var(--muted)}
+.hours-row span:last-child{color:var(--text);font-weight:500}
+
+/* FOOTER */
+.footer{background:var(--bg);padding:80px 80px 48px}
+.footer-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:64px}
+.footer-left{width:400px;display:flex;flex-direction:column;gap:24px}
+.footer-brand-group{display:flex;flex-direction:column;gap:0;align-items:flex-start}
+.footer-about{font-size:14px;color:var(--muted);line-height:1.65}
+.footer-links-grid{display:flex;gap:80px}
+.footer-col{display:flex;flex-direction:column;gap:16px}
+.footer-col-title{font-size:14px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.06em}
+.footer-col a,.footer-col p{font-size:14px;color:var(--muted);transition:color 200ms}
+.footer-col a:hover{color:var(--text)}
+.footer-bottom{border-top:1px solid var(--border);padding-top:24px;display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+
+@media(max-width:900px){
+  .nav{padding:16px 24px}.nav.scrolled{padding:12px 24px}
+  .nav-links{display:none}
+  .page-header{padding:120px 24px 60px}
+  .contact-main{padding:48px 24px}
+  .contact-grid{grid-template-columns:1fr;gap:48px}
+  .footer{padding:60px 24px 40px}
+  .footer-top{flex-direction:column;gap:48px}
+  .footer-left{width:100%}
+  .footer-links-grid{flex-wrap:wrap;gap:32px}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav" id="site-nav"></nav>
+
+<!-- PAGE HEADER -->
+<section class="page-header">
+  <div class="page-header-inner">
+    <div class="eyebrow reveal"><span class="eyebrow-dot"></span><span class="eyebrow-label">Get in Touch</span></div>
+    <div class="headline reveal d1">
+      <span class="line1">Let's talk about</span>
+      <span class="line2">your project</span>
+    </div>
+    <p style="font-size:16px;color:var(--muted);line-height:1.7;max-width:520px;margin-top:8px" class="reveal d2">Whether you're an architect specifying for a villa, a developer planning a hotel, or a homeowner who wants lighting that actually works — the first conversation is always free.</p>
+  </div>
+</section>
+
+<!-- CONTACT MAIN -->
+<section class="contact-main">
+  <div class="contact-grid">
+
+    <!-- LEFT: CTAs -->
+    <div class="cta-block">
+      <div class="reveal">
+        <div class="eyebrow" style="margin-bottom:16px"><span class="eyebrow-dot"></span><span class="eyebrow-label">Fastest way to reach us</span></div>
+        <p class="cta-desc">Drop us a message on WhatsApp — our team responds quickly and can get into the details of your project right away.</p>
+      </div>
+
+      <a href="https://wa.me/919063616060?text=Hi%2C%20I%20am%20looking%20to%20discuss%20a%20lighting%20project." class="wa-btn-large reveal d1" target="_blank" rel="noopener">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="#0d0d0e"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.557 4.124 1.533 5.858L.057 23.571a.5.5 0 0 0 .613.612l5.783-1.462A11.943 11.943 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.857a9.843 9.843 0 0 1-5.03-1.378l-.359-.213-3.431.867.9-3.323-.236-.373A9.822 9.822 0 0 1 2.143 12C2.143 6.546 6.546 2.143 12 2.143S21.857 6.546 21.857 12 17.454 21.857 12 21.857z"/></svg>
+        <div class="wa-label">
+          <span>Book a free consultation</span>
+          <span>Typically replies within an hour</span>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- RIGHT: CONTACT TILES -->
+    <div class="info-panel">
+      <a href="tel:+919063616060" class="secondary-action reveal d1">
+        <div class="secondary-action-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21.92 16z"/></svg>
+        </div>
+        <div class="secondary-action-body">
+          <span class="secondary-action-label">Call us</span>
+          <span class="secondary-action-value">+91 90636 16060</span>
+          <span class="secondary-action-sub">Mon – Sat, 10am – 7pm</span>
+        </div>
+      </a>
+      <a href="mailto:business@cambojelectricals.com" class="secondary-action reveal d2">
+        <div class="secondary-action-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div class="secondary-action-body">
+          <span class="secondary-action-label">Email</span>
+          <span class="secondary-action-value">business@cambojelectricals.com</span>
+          <span class="secondary-action-sub">For detailed briefs &amp; specifications</span>
+        </div>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer" id="site-footer"></footer>
+
+<script src="components.js"></script>
+<script>
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 60); }, { passive: true });
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('up'); io.unobserve(e.target); } });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>

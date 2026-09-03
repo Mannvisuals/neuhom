@@ -1,0 +1,309 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projects — Neuhom Lighting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0d0e;--surface:#161618;--gold:#e9a95b;
+  --text:#fff;--muted:rgba(255,255,255,0.7);--border:rgba(255,255,255,0.08);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+img{display:block;max-width:100%}
+
+/* ── NAV ── */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 80px;background:transparent;backdrop-filter:none;border-bottom:1px solid transparent;transition:padding 400ms ease,background 400ms ease,box-shadow 400ms ease,border-color 400ms ease}
+.nav.scrolled{padding:12px 80px;background:rgba(22,22,24,0.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);box-shadow:0 4px 32px rgba(0,0,0,0.4)}
+.nav-brand{display:flex;flex-direction:column;gap:0;align-items:flex-start}
+.nav-links{display:flex;gap:40px;list-style:none}
+.nav-links a{color:var(--muted);font-size:14px;font-weight:500;transition:color 200ms}
+.nav-links a:hover,.nav-links a.active{color:var(--text);font-weight:700}
+.nav-links a.active{color:var(--gold)}
+.btn-wa{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:#0d0d0e;font-size:14px;font-weight:600;padding:12px 24px;border-radius:4px;transition:opacity 200ms;white-space:nowrap}
+.btn-wa:hover{opacity:0.88}
+.btn-outline{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--gold);font-size:14px;font-weight:600;padding:12px 24px;border-radius:4px;border:1px solid var(--gold);transition:background 200ms}
+.btn-outline:hover{background:rgba(212,168,83,0.08)}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 640ms cubic-bezier(.22,.68,0,1.1),transform 640ms cubic-bezier(.22,.68,0,1.1)}
+.reveal.d1{transition-delay:80ms}.reveal.d2{transition-delay:160ms}.reveal.d3{transition-delay:240ms}.reveal.d4{transition-delay:320ms}.reveal.d5{transition-delay:400ms}.reveal.d6{transition-delay:480ms}
+.reveal.up{opacity:1;transform:none}
+
+/* ── EYEBROW ── */
+.eyebrow{display:flex;align-items:center;gap:8px}
+.eyebrow-dot{width:6px;height:6px;border-radius:3px;background:var(--gold);flex-shrink:0}
+.eyebrow-label{font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em}
+
+/* ── HEADLINE ── */
+.headline{color:var(--gold)}
+.headline .line1{font-size:30px;font-weight:700;line-height:1.2;display:block}
+.headline .line2{font-size:48px;font-weight:400;font-style:italic;font-family:'Playfair Display',serif;line-height:1.15;display:block}
+
+/* ── PAGE HEADER ── */
+.page-header{padding:180px 80px 48px;background:var(--bg)}
+.page-header .section-head{display:flex;flex-direction:column;gap:16px;max-width:760px}
+
+/* ── FILTER BAR ── */
+.filter-bar{padding:0 80px 48px;display:flex;align-items:center;justify-content:space-between}
+.filter-group{display:flex;gap:12px}
+.filter-pill{display:inline-flex;align-items:center;padding:8px 16px;border-radius:100px;border:1px solid var(--border);background:var(--bg);font-size:13px;font-weight:600;cursor:pointer;transition:background 200ms,border-color 200ms,color 200ms;color:var(--text)}
+.filter-pill.active{background:var(--gold);border-color:var(--gold);color:#0d0d0e}
+.filter-pill:hover:not(.active){border-color:rgba(255,255,255,0.24)}
+
+/* ── PROJECTS GRID ── */
+.projects-grid{padding:0 80px 100px;display:flex;flex-direction:column;gap:40px}
+.grid-row{display:flex;gap:24px}
+.project-card{flex:1;display:flex;flex-direction:column;gap:16px;cursor:pointer}
+.project-card.hidden{display:none}
+.card-img-wrap{height:280px;border-radius:4px;overflow:hidden;position:relative}
+.card-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform 600ms cubic-bezier(.22,.68,0,1.1)}
+.project-card:hover .card-img-wrap img{transform:scale(1.04)}
+.card-meta{display:flex;flex-direction:column;gap:4px}
+.card-tag{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.06em}
+.card-title{font-size:20px;font-weight:700;color:var(--text)}
+.card-desc{font-size:14px;color:var(--muted);line-height:1.55}
+
+/* ── FEATURED CASE STUDY ── */
+.case-study{background:var(--surface);padding:100px 80px}
+.case-header-row{display:flex;align-items:center;gap:32px;margin-bottom:48px}
+.case-label{font-family:'Inter',sans-serif;font-size:12px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;white-space:nowrap}
+.case-line{flex:1;height:1px;background:var(--gold)}
+.case-content{display:flex;gap:64px;align-items:center}
+.case-img{width:640px;height:480px;border-radius:8px;overflow:hidden;flex-shrink:0}
+.case-img img{width:100%;height:100%;object-fit:cover}
+.case-details{flex:1;display:flex;flex-direction:column;gap:24px}
+.case-title{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:var(--gold)}
+.case-loc{font-size:14px;color:var(--muted)}
+.case-quote{font-size:16px;color:var(--text);line-height:1.6}
+.spec-list{display:flex;flex-direction:column;gap:12px}
+.spec-row{display:flex;gap:12px;font-size:14px}
+.spec-label{font-weight:700;color:var(--text);width:140px;flex-shrink:0}
+.spec-val{color:var(--muted)}
+.case-actions{display:flex;gap:16px;align-items:center;padding-top:16px}
+
+/* ── FOOTER ── */
+.footer{background:var(--bg);padding:80px 80px 48px}
+.footer-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:64px}
+.footer-left{width:400px;display:flex;flex-direction:column;gap:24px}
+.footer-brand-group{display:flex;flex-direction:column;gap:0;align-items:flex-start}
+.footer-about{font-size:14px;color:var(--muted);line-height:1.65}
+.footer-links-grid{display:flex;gap:80px}
+.footer-col{display:flex;flex-direction:column;gap:16px}
+.footer-col-title{font-size:14px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.06em}
+.footer-col a,.footer-col p{font-size:14px;color:var(--muted);transition:color 200ms}
+.footer-col a:hover{color:var(--text)}
+.footer-col-addr{width:240px}
+.footer-bottom{border-top:1px solid var(--border);padding-top:24px;display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+
+@media(max-width:900px){
+  .nav{padding:16px 24px}.nav.scrolled{padding:12px 24px}
+  .page-header{padding:120px 24px 40px}
+  .filter-bar{padding:0 24px 32px;flex-direction:column;gap:16px;align-items:flex-start}
+  .projects-grid{padding:0 24px 80px}
+  .grid-row{flex-direction:column}
+  .case-study{padding:60px 24px}
+  .case-content{flex-direction:column}
+  .case-img{width:100%;height:280px}
+  .footer{padding:60px 24px 40px}
+  .footer-top{flex-direction:column;gap:48px}
+  .footer-left{width:100%}
+  .footer-links-grid{flex-wrap:wrap;gap:32px}
+  .nav-links{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="site-nav"></nav>
+
+<!-- PAGE HEADER -->
+<section class="page-header">
+  <div class="section-head">
+    <div class="eyebrow reveal">
+      <span class="eyebrow-dot"></span>
+      <span class="eyebrow-label">Our Work</span>
+    </div>
+    <div class="headline reveal d1">
+      <span class="line1">The proof is in</span>
+      <span class="line2">the lighting</span>
+    </div>
+    <p style="font-size:16px;color:var(--muted);line-height:1.6;max-width:640px" class="reveal d2">From custom high-end private villas to boutique office spaces and showrooms, explore how light completes architecture.</p>
+  </div>
+</section>
+
+<!-- FILTER BAR -->
+<div class="filter-bar reveal">
+  <div class="filter-group" id="type-filters">
+    <button class="filter-pill active" data-filter="type" data-value="all">All Type</button>
+    <button class="filter-pill" data-filter="type" data-value="residential">Residential</button>
+    <button class="filter-pill" data-filter="type" data-value="commercial">Commercial</button>
+    <button class="filter-pill" data-filter="type" data-value="boutique">Boutique</button>
+  </div>
+  <div class="filter-group" id="scale-filters">
+    <button class="filter-pill active" data-filter="scale" data-value="all">All Scale</button>
+    <button class="filter-pill" data-filter="scale" data-value="small">Small Project</button>
+    <button class="filter-pill" data-filter="scale" data-value="large">Large Project</button>
+  </div>
+</div>
+
+<!-- PROJECTS GRID -->
+<div class="projects-grid" id="projects-grid">
+  <div class="grid-row" id="row-1">
+    <div class="project-card reveal" data-type="residential" data-scale="large">
+      <div class="card-img-wrap">
+        <img src="https://www.figma.com/api/mcp/asset/836e1766-3783-49f9-ac46-207504090721.png" alt="The Jubilee Hills Villa">
+      </div>
+      <div class="card-meta">
+        <span class="card-tag">Residential</span>
+        <p class="card-title">The Jubilee Hills Villa</p>
+        <p class="card-desc">Warm custom linear profiles embedded dynamically in rich oak and black granite surfaces.</p>
+      </div>
+    </div>
+    <div class="project-card reveal d1" data-type="commercial" data-scale="small">
+      <div class="card-img-wrap">
+        <img src="https://www.figma.com/api/mcp/asset/4e9a4b5d-bda7-4ad3-ac99-6a95842e0aaf.png" alt="Onyx Salon & Spa">
+      </div>
+      <div class="card-meta">
+        <span class="card-tag">Commercial</span>
+        <p class="card-title">Onyx Salon &amp; Spa</p>
+        <p class="card-desc">Deep-recessed high CRI downlights crafted to highlight exact cosmetic tones without glare.</p>
+      </div>
+    </div>
+    <div class="project-card reveal d2" data-type="residential" data-scale="large">
+      <div class="card-img-wrap">
+        <img src="https://www.figma.com/api/mcp/asset/d1e24f9d-e76c-4abe-8ec1-274e618c7137.png" alt="The Zenith Penthouse">
+      </div>
+      <div class="card-meta">
+        <span class="card-tag">Residential</span>
+        <p class="card-title">The Zenith Penthouse</p>
+        <p class="card-desc">Architectural perimeter lighting design to reflect natural daylight changes from dawn to dusk.</p>
+      </div>
+    </div>
+  </div>
+  <div class="grid-row" id="row-2">
+    <div class="project-card reveal" data-type="commercial" data-scale="large">
+      <div class="card-img-wrap">
+        <img src="https://www.figma.com/api/mcp/asset/0cfb7d56-647a-47bd-a875-e60bdcc07344.png" alt="Meridian Office Loft">
+      </div>
+      <div class="card-meta">
+        <span class="card-tag">Commercial</span>
+        <p class="card-title">Meridian Office Loft</p>
+        <p class="card-desc">Dynamic task lighting with customizable warm and cool settings for maximum team productivity.</p>
+      </div>
+    </div>
+    <div class="project-card reveal d1" data-type="boutique" data-scale="small">
+      <div class="card-img-wrap">
+        <img src="https://www.figma.com/api/mcp/asset/82d41010-dfd0-4ea5-9373-5bf7134f4ebe.png" alt="Monolith Fine Dining">
+      </div>
+      <div class="card-meta">
+        <span class="card-tag">Boutique</span>
+        <p class="card-title">Monolith Fine Dining</p>
+        <p class="card-desc">Extremely low-contrast point lighting focused solely on the table center, casting rich amber hues.</p>
+      </div>
+    </div>
+    <div class="project-card reveal d2" data-type="boutique" data-scale="small">
+      <div class="card-img-wrap">
+        <img src="https://www.figma.com/api/mcp/asset/f5127908-9244-46ed-82d5-ef72d95a4501.png" alt="Avila Luxury Retail">
+      </div>
+      <div class="card-meta">
+        <span class="card-tag">Boutique</span>
+        <p class="card-title">Avila Luxury Retail</p>
+        <p class="card-desc">High end boutique showroom featuring high performance customized tracks and spotlight combinations.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURED CASE STUDY -->
+<section class="case-study">
+  <div class="case-header-row reveal">
+    <span class="case-label">Featured Detail Case Study</span>
+    <div class="case-line"></div>
+  </div>
+  <div class="case-content">
+    <div class="case-img reveal">
+      <img src="https://www.figma.com/api/mcp/asset/2a94f167-d7fc-4b80-852c-f08ef4ed97dd.png" alt="The Concrete Pavilion">
+    </div>
+    <div class="case-details">
+      <div class="reveal d1">
+        <p class="case-title">The Concrete Pavilion</p>
+        <p class="case-loc" style="margin-top:8px">Jubilee Hills Private Residence, 12,000 sq.ft</p>
+      </div>
+      <p class="case-quote reveal d2">"The design brief from the architect was to construct light that feels completely integrated with the monolithic raw concrete structures—without seeing any visible LED spots or glare."</p>
+      <div class="spec-list reveal d3">
+        <div class="spec-row">
+          <span class="spec-label">Luminaires Used:</span>
+          <span class="spec-val">Neuhom Deep-Recessed Comfort Downlights, Amber-LED profiles</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-label">Design Solution:</span>
+          <span class="spec-val">Dialux Simulation verified lux levels, custom driver testing at Hyderabad plant.</span>
+        </div>
+      </div>
+      <div class="case-actions reveal d4">
+        <a href="https://wa.me/919063616060?text=Hi%2C%20I%20would%20like%20to%20discuss%20a%20similar%20concrete%20pavilion%20layout." class="btn-wa" target="_blank" rel="noopener">Book a free consultation</a>
+        <a href="https://wa.me/919063616060" class="btn-outline" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Book a free consultation
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer" id="site-footer"></footer>
+
+<script src="components.js"></script>
+<script>
+// Nav scroll
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+// Scroll reveal
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('up'); io.unobserve(e.target); } });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// Filter logic
+let activeType = 'all', activeScale = 'all';
+
+document.querySelectorAll('.filter-pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    const filter = pill.dataset.filter;
+    const value = pill.dataset.value;
+    if (filter === 'type') { activeType = value; document.querySelectorAll('#type-filters .filter-pill').forEach(p => p.classList.toggle('active', p.dataset.value === value)); }
+    if (filter === 'scale') { activeScale = value; document.querySelectorAll('#scale-filters .filter-pill').forEach(p => p.classList.toggle('active', p.dataset.value === value)); }
+    applyFilters();
+  });
+});
+
+function applyFilters() {
+  const cards = document.querySelectorAll('.project-card');
+  cards.forEach(card => {
+    const typeMatch = activeType === 'all' || card.dataset.type === activeType;
+    const scaleMatch = activeScale === 'all' || card.dataset.scale === activeScale;
+    card.classList.toggle('hidden', !(typeMatch && scaleMatch));
+  });
+  // Hide empty rows
+  document.querySelectorAll('.grid-row').forEach(row => {
+    const visible = [...row.querySelectorAll('.project-card')].some(c => !c.classList.contains('hidden'));
+    row.style.display = visible ? '' : 'none';
+  });
+}
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Services — Neuhom Lighting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0d0d0e;--surface:#161618;--gold:#e9a95b;--text:#fff;--muted:rgba(255,255,255,0.7);--border:rgba(255,255,255,0.08)}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+img{display:block;max-width:100%}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 80px;background:transparent;border-bottom:1px solid transparent;transition:padding 400ms ease,background 400ms ease,box-shadow 400ms ease,border-color 400ms ease}
+.nav.scrolled{padding:12px 80px;background:rgba(22,22,24,0.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);box-shadow:0 4px 32px rgba(0,0,0,0.4)}
+.nav-brand{display:flex;align-items:flex-start}
+.nav-links{display:flex;gap:40px;list-style:none}
+.nav-links a{color:var(--muted);font-size:14px;font-weight:500;transition:color 200ms}
+.nav-links a:hover{color:var(--text)}
+.nav-links a.active{color:var(--gold);font-weight:700}
+.btn-wa{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:#0d0d0e;font-size:14px;font-weight:600;padding:12px 24px;border-radius:4px;transition:opacity 200ms;white-space:nowrap}
+.btn-wa:hover{opacity:0.88}
+.btn-outline{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--gold);font-size:14px;font-weight:600;padding:12px 24px;border-radius:4px;border:1px solid var(--gold);transition:background 200ms}
+.btn-outline:hover{background:rgba(233,169,91,0.08)}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 640ms cubic-bezier(.22,.68,0,1.1),transform 640ms cubic-bezier(.22,.68,0,1.1)}
+.reveal.d1{transition-delay:80ms}.reveal.d2{transition-delay:160ms}.reveal.d3{transition-delay:240ms}.reveal.d4{transition-delay:320ms}
+.reveal.up{opacity:1;transform:none}
+
+/* EYEBROW */
+.eyebrow{display:flex;align-items:center;gap:8px}
+.eyebrow-dot{width:6px;height:6px;border-radius:3px;background:var(--gold);flex-shrink:0}
+.eyebrow-label{font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em}
+
+/* PAGE HEADER */
+.page-header{padding:180px 80px 100px;background:var(--bg);border-bottom:1px solid var(--border)}
+.page-header-inner{max-width:800px;display:flex;flex-direction:column;gap:20px}
+.page-title{color:var(--gold)}
+.page-title .line1{font-size:30px;font-weight:700;line-height:1.2;display:block}
+.page-title .line2{font-size:48px;font-weight:400;font-style:italic;font-family:'Playfair Display',serif;line-height:1.1;display:block}
+.page-sub{font-size:17px;color:var(--muted);line-height:1.65;max-width:600px}
+
+/* CORE SERVICES */
+.service-block{display:grid;grid-template-columns:1fr 1fr;min-height:560px;border-bottom:1px solid var(--border)}
+.service-block.surface{background:var(--surface)}
+.service-block.reversed .service-visual{order:2}
+.service-block.reversed .service-body{order:1}
+.service-visual{position:relative;overflow:hidden;min-height:400px}
+.service-visual img{width:100%;height:100%;object-fit:cover;transition:transform 700ms ease}
+.service-visual:hover img{transform:scale(1.04)}
+.service-visual-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(13,13,14,0.5) 0%,transparent 60%);pointer-events:none}
+.service-num{position:absolute;top:32px;left:32px;font-size:11px;font-family:'Inter',sans-serif;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.14em}
+.service-body{padding:72px 64px;display:flex;flex-direction:column;justify-content:center;gap:28px}
+.service-heading{color:var(--gold)}
+.service-heading .h-label{font-size:11px;font-family:'Inter',sans-serif;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:12px;display:block}
+.service-heading .h-main{font-size:30px;font-weight:700;line-height:1.2;display:block}
+.service-heading .h-sub{font-size:48px;font-weight:400;font-style:italic;font-family:'Playfair Display',serif;line-height:1.1;display:block}
+.service-desc{font-size:15px;color:var(--muted);line-height:1.7}
+.bullet-list{display:flex;flex-direction:column;gap:10px}
+.bullet-item{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--text);line-height:1.45}
+.bullet-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:6px}
+
+/* SECTORS */
+.sectors-section{padding:100px 80px;background:var(--bg)}
+.sectors-header{display:flex;flex-direction:column;gap:16px;margin-bottom:56px;max-width:640px}
+.sectors-header .s-title .line1{font-size:30px;font-weight:700;line-height:1.2;display:block;color:var(--gold)}
+.sectors-header .s-title .line2{font-size:48px;font-weight:400;font-style:italic;font-family:'Playfair Display',serif;line-height:1.1;display:block;color:var(--gold)}
+.sectors-header .s-desc{font-size:15px;color:var(--muted);line-height:1.65}
+.sectors-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.sector-card{background:var(--surface);padding:48px;display:flex;flex-direction:column;gap:20px;transition:background 300ms}
+.sector-card:hover{background:#1a1a1c}
+.sector-icon{width:48px;height:48px;border-radius:4px;background:rgba(233,169,91,0.1);display:flex;align-items:center;justify-content:center}
+.sector-icon svg{stroke:var(--gold)}
+.sector-title{font-size:22px;font-weight:700;color:var(--text)}
+.sector-desc{font-size:14px;color:var(--muted);line-height:1.65}
+.sector-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.sector-tag{font-size:12px;font-family:'Inter',sans-serif;font-weight:600;color:var(--gold);background:rgba(233,169,91,0.08);padding:4px 10px;border-radius:2px}
+
+/* ADD-ON SERVICES */
+.addons-section{background:var(--surface);padding:100px 80px;border-top:1px solid var(--border)}
+.addons-header{display:flex;flex-direction:column;gap:16px;margin-bottom:48px;max-width:560px}
+.addons-header .a-label{font-size:11px;font-family:'Inter',sans-serif;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.12em}
+.addons-header .a-title .line1{font-size:30px;font-weight:700;line-height:1.2;display:block;color:var(--text)}
+.addons-header .a-title .line2{font-size:48px;font-weight:400;font-style:italic;font-family:'Playfair Display',serif;line-height:1.1;display:block;color:var(--text)}
+.addons-header .a-desc{font-size:15px;color:var(--muted);line-height:1.65}
+.addons-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.addon-card{border:1px solid var(--border);border-radius:4px;padding:36px;display:flex;flex-direction:column;gap:16px;transition:border-color 300ms}
+.addon-card:hover{border-color:rgba(233,169,91,0.3)}
+.addon-icon{width:40px;height:40px;border-radius:4px;background:rgba(233,169,91,0.08);display:flex;align-items:center;justify-content:center}
+.addon-icon svg{stroke:var(--gold)}
+.addon-title{font-size:18px;font-weight:700;color:var(--text)}
+.addon-desc{font-size:14px;color:var(--muted);line-height:1.65}
+.addon-bullets{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.addon-bullet{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--muted)}
+.addon-bullet-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:5px}
+
+/* CTA */
+.cta-section{background:var(--bg);padding:100px 80px;display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center;border-top:1px solid var(--border)}
+.cta-headline{color:var(--gold)}
+.cta-headline .line1{font-size:28px;font-weight:700;display:block;line-height:1.2}
+.cta-headline .line2{font-size:44px;font-weight:400;font-style:italic;font-family:'Playfair Display',serif;display:block;line-height:1.15}
+.cta-desc{font-size:16px;color:var(--muted);max-width:560px;line-height:1.6}
+.cta-actions{display:flex;gap:16px;padding-top:8px}
+
+/* FOOTER */
+.footer{background:var(--bg);padding:80px 80px 48px}
+.footer-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:64px}
+.footer-left{width:400px;display:flex;flex-direction:column;gap:24px}
+.footer-brand-group{display:flex;flex-direction:column;gap:0;align-items:flex-start}
+.footer-about{font-size:14px;color:var(--muted);line-height:1.65}
+.footer-links-grid{display:flex;gap:80px}
+.footer-col{display:flex;flex-direction:column;gap:16px}
+.footer-col-title,.footer-col-addr .footer-col-title{font-size:14px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.06em}
+.footer-col a,.footer-col p{font-size:14px;color:var(--muted);transition:color 200ms}
+.footer-col a:hover{color:var(--text)}
+.footer-col-addr{width:200px}
+.footer-bottom{border-top:1px solid var(--border);padding-top:24px;display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+
+@media(max-width:1100px){
+  .nav{padding:20px 40px}.nav.scrolled{padding:12px 40px}
+  .page-header{padding:140px 40px 80px}
+  .service-body{padding:56px 40px}
+  .sectors-section,.addons-section,.cta-section{padding:80px 40px}
+  .footer{padding:80px 40px 48px}
+  .footer-links-grid{gap:48px}
+}
+@media(max-width:900px){
+  .nav{padding:16px 24px}.nav.scrolled{padding:12px 24px}
+  .nav-links{display:none}
+  .page-header{padding:120px 24px 64px}
+  .page-title .line1{font-size:24px}
+  .page-title .line2{font-size:40px}
+  .service-block,.service-block.reversed{grid-template-columns:1fr;min-height:auto}
+  .service-block.reversed .service-visual{order:0}
+  .service-block.reversed .service-body{order:1}
+  .service-visual{min-height:280px}
+  .service-body{padding:48px 24px}
+  .service-heading .h-main{font-size:22px}
+  .service-heading .h-sub{font-size:35px}
+  .page-title .line1{font-size:22px}
+  .page-title .line2{font-size:35px}
+  .sectors-header .s-title .line1,.addons-header .a-title .line1{font-size:22px}
+  .sectors-header .s-title .line2,.addons-header .a-title .line2{font-size:35px}
+  .sectors-section,.addons-section,.cta-section{padding:64px 24px}
+  .sectors-grid{grid-template-columns:1fr}
+  .addons-grid{grid-template-columns:1fr}
+  .footer{padding:60px 24px 40px}
+  .footer-top{flex-direction:column;gap:48px}
+  .footer-left{width:100%}
+  .footer-links-grid{flex-wrap:wrap;gap:32px}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav" id="site-nav"></nav>
+
+<!-- PAGE HEADER -->
+<section class="page-header">
+  <div class="page-header-inner">
+    <div class="eyebrow reveal"><span class="eyebrow-dot"></span><span class="eyebrow-label">What We Do</span></div>
+    <div class="page-title reveal d1">
+      <span class="line1">End-to-end lighting</span>
+      <span class="line2">designed around your space</span>
+    </div>
+    <p class="page-sub reveal d2">From the first site visit to the final fixture, Neuhom handles every layer of your lighting — design, engineering, sourcing, and delivery.</p>
+  </div>
+</section>
+
+<!-- SERVICE 1: LIGHTING CONSULTATION -->
+<section class="service-block">
+  <div class="service-visual reveal">
+    <img src="https://www.figma.com/api/mcp/asset/50f31eaf-39e1-4206-a68f-55b60f5c5cde.png" alt="Lighting Consultation">
+    <div class="service-visual-overlay"></div>
+    <span class="service-num">01 — Core Service</span>
+  </div>
+  <div class="service-body">
+    <div class="service-heading reveal">
+      <span class="h-label">Lighting Consultation</span>
+      <span class="h-main">A conversation before</span>
+      <span class="h-sub">anything else</span>
+    </div>
+    <p class="service-desc reveal d1">Every project begins with an honest technical discussion — no sales pitch. We visit your site, understand your brief, and map out a lighting strategy that fits the architecture, the budget, and the mood you're after.</p>
+    <div class="bullet-list reveal d2">
+      <div class="bullet-item"><span class="bullet-dot"></span>Site visit and space assessment</div>
+      <div class="bullet-item"><span class="bullet-dot"></span>Design brief and mood alignment</div>
+      <div class="bullet-item"><span class="bullet-dot"></span>Lux level requirements and zoning</div>
+      <div class="bullet-item"><span class="bullet-dot"></span>Budget mapping and fixture shortlist</div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICE 2: ARCHITECTURAL LIGHTING -->
+<section class="service-block reversed surface">
+  <div class="service-visual reveal">
+    <img src="https://www.figma.com/api/mcp/asset/21fc37f4-9ded-48a8-afac-9a447e14af65.png" alt="Architectural Lighting">
+    <div class="service-visual-overlay"></div>
+    <span class="service-num">02 — Core Service</span>
+  </div>
+  <div class="service-body">
+    <div class="service-heading reveal">
+      <span class="h-label">Architectural Lighting</span>
+      <span class="h-main">Light that becomes</span>
+      <span class="h-sub">part of the architecture</span>
+    </div>
+    <p class="service-desc reveal d1">Cove lighting, facade wash, ambient layers, accent and task — we design the full lighting composition for a space so it works as an integrated whole, not a collection of fixtures.</p>
+    <div class="bullet-list reveal d2">
+      <div class="bullet-item"><span class="bullet-dot"></span>Cove, linear and recessed ceiling systems</div>
+      <div class="bullet-item"><span class="bullet-dot"></span>Facade and exterior architectural wash</div>
+      <div class="bullet-item"><span class="bullet-dot"></span>Layered ambient, accent and task lighting</div>
+      <div class="bullet-item"><span class="bullet-dot"></span>Deep-recess downlights with 97+ CRI</div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICE 3: CUSTOM LIGHTING DESIGN -->
+<section class="service-block">
+  <div class="service-visual reveal">
+    <img src="https://www.figma.com/api/mcp/asset/b8ee9a98-a3f7-4618-9b00-cf2e2e176e9e.png" alt="Custom Lighting Design">
+    <div class="service-visual-overlay"></div>
+    <span class="service-num">03 — Core Service</span>
+  </div>
+  <div class="service-body">
+    <div class="service-heading reveal">
+      <span class="h-label">Custom Lighting Design</span>
+      <span class="h-main">Engineered to your</span>
+      <span class="h-sub">exact dimensions</span>
+    </div>
+    <p class="service-desc reveal d1">When off-the-shelf doesn't fit the architecture, we manufacture to order. Our in-house designers produce full Dialux simulations before anything is ordered — so what you see in the render is exactly what you get on site.</p>
+    <div class="bullet-list reveal d2">
+      <div class="bullet-item"><span class="bullet-dot"></span>Full Dialux photometric simulation</div>
+      <div class="bullet-item"><span class="bullet-dot"></span>Custom linear profiles milled to site dimensions</div>
+      <div class="bullet-item"><span class="bullet-dot"></span>Mood boards and finish selection</div>
+      <div class="bullet-item"><span class="bullet-dot"></span>Tunable white from 2700K to 6000K</div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICE 4: SMART LIGHTING -->
+<section class="service-block reversed surface">
+  <div class="service-visual reveal">
+    <img src="https://www.figma.com/api/mcp/asset/50f31eaf-39e1-4206-a68f-55b60f5c5cde.png" alt="Smart & Automated Lighting">
+    <div class="service-visual-overlay"></div>
+    <span class="service-num">04 — Core Service</span>
+  </div>
+  <div class="service-body">
+    <div class="service-heading reveal">
+      <span class="h-label">Smart & Automated Lighting</span>
+      <span class="h-main">Scenes, schedules</span>
+      <span class="h-sub">and seamless control</span>
+    </div>
+    <p class="service-desc reveal d1">Lighting that responds to the moment — whether that's a dinner setting, a presentation, or daylight flooding in from a window. We integrate dimmer systems, occupancy sensors, and DALI controls into a single intuitive interface.</p>
+    <div class="bullet-list reveal d2">
+      <div class="bullet-item"><span class="bullet-dot"></span>Scene-based and schedule-driven control</div>
+      <div class="bullet-item"><span class="bullet-dot"></span>DALI and DMX protocol integration</div>
+      <div class="bullet-item"><span class="bullet-dot"></span>Occupancy and daylight harvesting sensors</div>
+      <div class="bullet-item"><span class="bullet-dot"></span>Compatible with KNX, Crestron, and home automation</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTORS WE SERVE -->
+<section class="sectors-section">
+  <div class="sectors-header">
+    <div class="eyebrow reveal"><span class="eyebrow-dot"></span><span class="eyebrow-label">Who We Work With</span></div>
+    <h2 class="s-title reveal d1"><span class="line1">Two worlds,</span><span class="line2">one standard of lighting</span></h2>
+    <p class="s-desc reveal d2">Whether it's a 400-cover restaurant or a family home, the approach is the same — thoughtful design, precise engineering, no corners cut.</p>
+  </div>
+  <div class="sectors-grid">
+    <div class="sector-card reveal">
+      <div class="sector-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      </div>
+      <h3 class="sector-title">Hospitality &amp; Commercial</h3>
+      <p class="sector-desc">Restaurants, hotels, retail chains, airports, corporate offices. Spaces where lighting directly affects how guests feel — and how long they stay.</p>
+      <div class="sector-tags">
+        <span class="sector-tag">Restaurants</span>
+        <span class="sector-tag">Hotels</span>
+        <span class="sector-tag">Retail</span>
+        <span class="sector-tag">Airports</span>
+        <span class="sector-tag">Corporate</span>
+      </div>
+    </div>
+    <div class="sector-card reveal d1">
+      <div class="sector-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <h3 class="sector-title">Residential</h3>
+      <p class="sector-desc">Homes, villas, luxury apartments and penthouses. We work closely with interior designers and architects to create lighting that feels personal, not showroom-standard.</p>
+      <div class="sector-tags">
+        <span class="sector-tag">Villas</span>
+        <span class="sector-tag">Apartments</span>
+        <span class="sector-tag">Penthouses</span>
+        <span class="sector-tag">Builder Projects</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ADD-ON SERVICES -->
+<section class="addons-section">
+  <div class="addons-header">
+    <span class="a-label reveal">Add-on Services</span>
+    <h2 class="a-title reveal d1"><span class="line1">We don't hand over</span><span class="line2">and disappear</span></h2>
+    <p class="a-desc reveal d2">Installation and after-sales are available as optional add-ons — for clients who want Neuhom's involvement from design through to the last screw.</p>
+  </div>
+  <div class="addons-grid">
+    <div class="addon-card reveal">
+      <div class="addon-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      </div>
+      <h3 class="addon-title">Installation &amp; Commissioning</h3>
+      <p class="addon-desc">Our on-site engineering team supervises or directly handles fixture installation, wiring coordination, and final commissioning — ensuring every light lands exactly where the design intended.</p>
+      <div class="addon-bullets">
+        <div class="addon-bullet"><span class="addon-bullet-dot"></span>Wiring supervision and electrical coordination</div>
+        <div class="addon-bullet"><span class="addon-bullet-dot"></span>Fixture positioning and aiming</div>
+        <div class="addon-bullet"><span class="addon-bullet-dot"></span>Dimmer and control system setup</div>
+        <div class="addon-bullet"><span class="addon-bullet-dot"></span>On-site testing and sign-off</div>
+      </div>
+    </div>
+    <div class="addon-card reveal d1">
+      <div class="addon-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <h3 class="addon-title">After-Sales &amp; Maintenance</h3>
+      <p class="addon-desc">Warranty support, driver and lamp replacements, system reconfiguration as spaces evolve. We stay available long after the invoice is settled.</p>
+      <div class="addon-bullets">
+        <div class="addon-bullet"><span class="addon-bullet-dot"></span>Manufacturer warranty on all fixtures</div>
+        <div class="addon-bullet"><span class="addon-bullet-dot"></span>Driver and component replacement</div>
+        <div class="addon-bullet"><span class="addon-bullet-dot"></span>Scheduled maintenance contracts</div>
+        <div class="addon-bullet"><span class="addon-bullet-dot"></span>System reconfiguration and scene updates</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="eyebrow reveal" style="justify-content:center"><span class="eyebrow-dot"></span><span class="eyebrow-label">Start Here</span></div>
+  <div class="cta-headline reveal d1">
+    <span class="line1">The first conversation</span>
+    <span class="line2">is always free</span>
+  </div>
+  <p class="cta-desc reveal d2">Tell us about your project — size, stage, and what you're imagining. We'll take it from there.</p>
+  <div class="cta-actions reveal d3">
+    <a href="https://wa.me/919063616060?text=Hi%2C%20I%20would%20like%20to%20book%20a%20free%20lighting%20consultation." class="btn-wa" target="_blank" rel="noopener">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" stroke="#0d0d0e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Book a free consultation
+    </a>
+    <a href="https://wa.me/919063616060?text=Hi%2C%20I%20would%20like%20to%20request%20a%20callback%20to%20discuss%20a%20lighting%20project." class="btn-outline" target="_blank" rel="noopener">Request a callback</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer" id="site-footer"></footer>
+
+<script src="components.js"></script>
+<script>
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('up'); io.unobserve(e.target); } });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>

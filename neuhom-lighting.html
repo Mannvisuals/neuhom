@@ -1,0 +1,651 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neuhom — Architectural Lighting</title>
+<meta name="description" content="Premium architectural lighting engineered and manufactured in India. For architects, interior designers, and beautiful homes.">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-D09WX9VHEG"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-D09WX9VHEG');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  background: #0d0d0e;
+  color: #fff;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+
+/* ── HERO LOAD ANIMATION ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: none; }
+}
+.hero-badge  { animation: fadeUp 700ms cubic-bezier(.22,.68,0,1.2) 200ms both; }
+.hero-headline { animation: fadeUp 700ms cubic-bezier(.22,.68,0,1.2) 350ms both; }
+.hero-sub    { animation: fadeUp 700ms cubic-bezier(.22,.68,0,1.2) 500ms both; }
+.hero-actions { animation: fadeUp 700ms cubic-bezier(.22,.68,0,1.2) 650ms both; }
+
+/* ── SCROLL REVEAL ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 680ms cubic-bezier(.22,.68,0,1.1), transform 680ms cubic-bezier(.22,.68,0,1.1);
+}
+.reveal.d1 { transition-delay: 80ms; }
+.reveal.d2 { transition-delay: 160ms; }
+.reveal.d3 { transition-delay: 240ms; }
+.reveal.d4 { transition-delay: 320ms; }
+.reveal.up  { opacity: 1; transform: none; }
+
+/* ── NAV ── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 80px;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: 1px solid transparent;
+  transition: padding 400ms ease, background 400ms ease, box-shadow 400ms ease, border-color 400ms ease, backdrop-filter 400ms ease;
+}
+.nav.scrolled {
+  padding: 12px 80px;
+  background: rgba(22,22,24,0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 4px 32px rgba(0,0,0,0.4);
+}
+.nav-brand { display: flex; flex-direction: column; gap: 2px; }
+/* nav-logo replaced by SVG */
+.nav-sub {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600; font-size: 9px;
+  color: #e9a95b; text-transform: uppercase; letter-spacing: 0.1em;
+}
+.nav-links {
+  display: flex; gap: 40px; list-style: none;
+  font-size: 14px;
+}
+.nav-links a { color: rgba(255,255,255,0.7); font-weight: 500; transition: color 200ms; }
+.nav-links a:hover, .nav-links a.active { color: #fff; font-weight: 700; }
+.btn-wa {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 24px; background: #e9a95b; color: #0d0d0e;
+  font-size: 14px; font-weight: 600; border-radius: 4px;
+  transition: background 200ms, transform 180ms, box-shadow 200ms;
+}
+.btn-wa:hover {
+  background: #e0b85a;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(212,168,83,0.35);
+}
+.btn-wa:active { transform: translateY(0); }
+.btn-wa img { width: 16px; height: 16px; flex-shrink: 0; }
+.btn-outline {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 24px; border: 1px solid #e9a95b; color: #e9a95b;
+  font-size: 14px; font-weight: 600; border-radius: 4px;
+  transition: background 200ms, transform 180ms;
+}
+.btn-outline:hover { background: rgba(212,168,83,0.08); transform: translateY(-2px); }
+.btn-outline:active { transform: translateY(0); }
+
+/* ── HERO ── */
+.hero {
+  position: relative; height: 100vh; min-height: 640px;
+  overflow: hidden; display: flex; flex-direction: column;
+  align-items: flex-start; justify-content: center;
+  padding: 57px 80px 120px; /* top = nav height, bottom = room for buttons */
+  margin-top: 0;
+}
+.hero-bg {
+  position: absolute; inset: 0; z-index: 0;
+}
+.hero-bg img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+}
+.hero-bg-overlay {
+  position: absolute; inset: 0;
+  background: rgba(13,13,14,0.72);
+}
+.hero-center {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; gap: 40px;
+  max-width: 720px;
+}
+.hero-text {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; gap: 24px;
+  max-width: 720px;
+}
+.hero-badge {
+  display: flex; align-items: center; gap: 8px;
+}
+.hero-badge-line { width: 24px; height: 1px; background: #e9a95b; flex-shrink: 0; }
+.hero-badge-text {
+  font-family: 'Inter', sans-serif; font-weight: 700;
+  font-size: 12px; color: #fff; text-transform: uppercase; letter-spacing: 0.12em;
+}
+.hero-headline { display: flex; flex-direction: column; }
+.hero-h1 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600; font-size: 40px; color: #fff; line-height: 1.15;
+}
+.hero-h1-italic {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic; font-weight: 400; font-size: 64px; color: #fff; line-height: 1.1;
+}
+.hero-sub {
+  font-size: 18px; font-weight: 400;
+  color: rgba(255,255,255,0.8); line-height: 1.6; max-width: 640px;
+}
+.hero-actions {
+  position: absolute; bottom: 56px; left: 80px; right: 80px;
+  z-index: 2;
+  display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
+}
+
+/* ── CLIENTS ── */
+.clients-section {
+  background: #0d0d0e;
+  padding: 80px 80px;
+  display: flex; flex-direction: column; gap: 40px; align-items: center;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.clients-label {
+  font-family: 'Inter', sans-serif; font-weight: 700; font-size: 11px;
+  color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.14em;
+  text-align: center;
+}
+.clients-logos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 100%; max-width: 960px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 4px; overflow: hidden;
+}
+.client-cell {
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px 32px; height: 160px;
+  border-right: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  transition: background 300ms;
+}
+.client-cell:hover { background: rgba(255,255,255,0.03); }
+.client-cell:nth-child(3n) { border-right: none; }
+.client-cell:nth-child(4), .client-cell:nth-child(5), .client-cell:nth-child(6) { border-bottom: none; }
+.client-cell svg, .client-cell img { max-width: 160px; max-height: 64px; object-fit: contain; }
+
+/* ── TRUST STRIP ── */
+.trust-strip {
+  background: #161618;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 0 80px;
+  height: 84px;
+  display: flex; align-items: center; justify-content: center;
+  gap: 0;
+}
+.trust-item {
+  display: flex; align-items: center;
+  font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.7);
+  padding: 0 40px;
+}
+.trust-sep {
+  width: 1px; height: 20px;
+  background: rgba(255,255,255,0.15); flex-shrink: 0;
+}
+
+/* ── SECTION HEADER PATTERN ── */
+.eyebrow-row {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
+}
+.eyebrow-dot {
+  width: 6px; height: 6px; border-radius: 3px; background: #e9a95b; flex-shrink: 0;
+}
+.eyebrow-text {
+  font-family: 'Inter', sans-serif; font-weight: 600; font-size: 12px;
+  color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 0.1em;
+}
+.section-title { margin-bottom: 16px; }
+.section-title-line1 {
+  display: block;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700; font-size: 30px; color: #e9a95b; line-height: 1.2;
+}
+.section-title-line2 {
+  display: block;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic; font-weight: 400; font-size: 48px; color: #e9a95b; line-height: 1.1;
+}
+.section-desc {
+  font-size: 16px; font-weight: 400; color: rgba(255,255,255,0.7); line-height: 1.6;
+}
+
+/* ── SERVICES ── */
+.services-section {
+  background: #0d0d0e;
+  padding: 100px 80px;
+  display: flex; flex-direction: column; gap: 56px;
+}
+.services-cards {
+  display: flex; gap: 24px;
+}
+.service-card {
+  flex: 1 0 0; min-width: 1px;
+  background: #0d0d0e;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px; overflow: hidden;
+  display: flex; flex-direction: column;
+  transition: transform 300ms cubic-bezier(.22,.68,0,1.2), border-color 300ms, box-shadow 300ms;
+}
+.service-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(212,168,83,0.3);
+  box-shadow: 0 20px 48px rgba(0,0,0,0.4);
+}
+.service-card-img {
+  height: 280px; position: relative; flex-shrink: 0; overflow: hidden;
+}
+.service-card-img img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  transition: transform 600ms cubic-bezier(.22,.68,0,1.1);
+}
+.service-card:hover .service-card-img img { transform: scale(1.06); }
+.service-card-body {
+  padding: 24px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.service-card-title {
+  font-size: 20px; font-weight: 700; color: #fff;
+}
+.service-card-desc {
+  font-size: 14px; font-weight: 400; color: rgba(255,255,255,0.7); line-height: 1.6;
+}
+
+/* ── PROJECTS ── */
+.projects-section {
+  background: #0d0d0e;
+  padding: 100px 80px;
+  display: flex; flex-direction: column; gap: 56px;
+}
+.projects-row {
+  display: flex; gap: 24px; align-items: flex-start;
+}
+.project-item {
+  display: flex; flex-direction: column; gap: 16px;
+}
+.project-item.large { flex: 1 0 0; min-width: 1px; }
+.project-item.small { width: 480px; flex-shrink: 0; }
+.project-img-wrap {
+  position: relative; border-radius: 4px; overflow: hidden; flex-shrink: 0;
+  cursor: pointer;
+}
+.project-img-wrap img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  transition: transform 700ms cubic-bezier(.22,.68,0,1.1), filter 400ms ease;
+}
+.project-img-wrap:hover img { transform: scale(1.05); filter: brightness(1.1); }
+.project-item { transition: transform 300ms ease; }
+.project-item:hover { transform: translateY(-4px); }
+.project-info { display: flex; flex-direction: column; gap: 4px; }
+.project-name { font-size: 20px; font-weight: 700; color: #fff; }
+.project-meta { font-size: 14px; font-weight: 400; color: rgba(255,255,255,0.7); }
+
+/* ── WHY NEUHOM ── */
+.why-section {
+  background: #161618;
+  padding: 100px 80px;
+  display: flex; flex-direction: column; gap: 56px;
+}
+.pillars-grid { display: flex; gap: 40px; }
+.pillar-card {
+  flex: 1 0 0; min-width: 1px;
+  background: #161618;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 4px; padding: 24px;
+  display: flex; flex-direction: column; gap: 16px;
+  transition: border-color 300ms, transform 300ms cubic-bezier(.22,.68,0,1.2), box-shadow 300ms;
+}
+.pillar-card:hover {
+  border-color: rgba(212,168,83,0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+}
+.pillar-num-row { display: flex; align-items: center; gap: 12px; }
+.pillar-num {
+  font-size: 24px; font-weight: 800; color: #e9a95b;
+}
+.pillar-accent-line { width: 16px; height: 1px; background: #e9a95b; }
+.pillar-title { font-size: 20px; font-weight: 700; color: #fff; }
+.pillar-desc { font-size: 14px; font-weight: 400; color: rgba(255,255,255,0.7); line-height: 1.6; }
+
+/* ── CTA ── */
+.cta-section {
+  background: #0d0d0e;
+  padding: 100px 80px;
+  display: flex; flex-direction: column; gap: 32px;
+  align-items: center; text-align: center;
+}
+.cta-title .section-title-line1,
+.cta-title .section-title-line2 { text-align: center; }
+.cta-desc {
+  font-size: 16px; font-weight: 400;
+  color: rgba(255,255,255,0.7); line-height: 1.6; max-width: 640px;
+}
+.cta-buttons { display: flex; gap: 16px; align-items: center; }
+
+/* ── FOOTER ── */
+.footer {
+  background: #0d0d0e;
+  padding: 80px 80px 48px;
+  display: flex; flex-direction: column; gap: 64px;
+}
+.footer-top {
+  display: flex; justify-content: space-between; align-items: flex-start;
+}
+.footer-left { width: 400px; display: flex; flex-direction: column; gap: 24px; }
+.footer-brand-group { display: flex; flex-direction: column; gap: 0; align-items: flex-start; }
+.footer-logo {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700; font-size: 32px; color: #fff;
+}
+.footer-brand-sub {
+  font-family: 'Inter', sans-serif; font-weight: 600; font-size: 11px;
+  color: #e9a95b; text-transform: uppercase; letter-spacing: 0.1em;
+}
+.footer-about {
+  font-size: 14px; font-weight: 400;
+  color: rgba(255,255,255,0.7); line-height: 1.65;
+}
+.footer-links-grid { display: flex; gap: 80px; font-size: 14px; }
+.footer-col { display: flex; flex-direction: column; gap: 16px; }
+.footer-col-title {
+  font-size: 14px; font-weight: 700; color: #e9a95b; text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.footer-col a, .footer-col p {
+  font-size: 14px; font-weight: 400; color: rgba(255,255,255,0.7);
+  transition: color 200ms;
+}
+.footer-col a:hover { color: #e9a95b; }
+.footer-col.presence { width: 240px; }
+.footer-col.presence p { line-height: 1.6; }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 24px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.7);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1100px) {
+  .nav { padding: 16px 40px; }
+  .hero { padding: 57px 24px 64px; }
+  .trust-strip { padding: 0 40px; gap: 0; }
+  .services-section, .projects-section, .why-section, .cta-section, .footer { padding-left: 40px; padding-right: 40px; }
+  .footer-links-grid { gap: 48px; }
+}
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .hero { padding: 120px 24px 48px; }
+  .hero-h1 { font-size: 28px; }
+  .hero-h1-italic { font-size: 44px; }
+  .trust-strip { padding: 0 24px; flex-wrap: wrap; height: auto; padding-top: 20px; padding-bottom: 20px; gap: 12px; }
+  .trust-sep { display: none; }
+  .trust-item { padding: 0; }
+  .clients-section { padding: 60px 24px; }
+  .clients-logos { grid-template-columns: repeat(2, 1fr); }
+  .client-cell:nth-child(3n) { border-right: 1px solid rgba(255,255,255,0.08); }
+  .client-cell:nth-child(2n) { border-right: none; }
+  .client-cell:nth-child(5), .client-cell:nth-child(6) { border-bottom: none; }
+  .services-section, .why-section, .cta-section { padding: 64px 24px; }
+  .footer { padding: 64px 24px 32px; }
+  .services-cards { flex-direction: column; }
+  .pillars-grid { flex-direction: column; gap: 16px; }
+  .footer-top { flex-direction: column; gap: 48px; }
+  .footer-left { width: 100%; }
+  .footer-links-grid { gap: 32px; flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="site-nav"></nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg" aria-hidden="true">
+    <img src="https://www.figma.com/api/mcp/asset/96c49822-4d2f-46e0-8861-963396d7b21c.png" alt="">
+    <div class="hero-bg-overlay"></div>
+  </div>
+  <div class="hero-text">
+    <div class="hero-badge">
+      <div class="hero-badge-line"></div>
+      <span class="hero-badge-text">Neuhom — A Camboj Company</span>
+    </div>
+    <div class="hero-headline">
+      <span class="hero-h1">Lighting that turns</span>
+      <span class="hero-h1-italic">spaces into experiences</span>
+    </div>
+    <p class="hero-sub">Since 1992, we've combined high-end design aesthetics with real in-house manufacturing capability. For architects, interior designers, and beautiful homes.</p>
+  </div>
+  <div class="hero-actions">
+    <a href="https://wa.me/919063616060?text=Hi%2C%20I%20am%20looking%20to%20discuss%20a%20lighting%20project." class="btn-wa" target="_blank" rel="noopener">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" stroke="#0d0d0e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Book a free consultation
+    </a>
+    <a href="#services" class="btn-outline">Explore our work</a>
+  </div>
+</section>
+
+<!-- TRUST STRIP -->
+<div class="trust-strip">
+  <div class="trust-item">32 Years of Manufacturing Excellence</div>
+  <div class="trust-sep"></div>
+  <div class="trust-item">In-house Design &amp; Engineering</div>
+  <div class="trust-sep"></div>
+  <div class="trust-item">Backed by <a href="https://www.cambojelectricals.com" target="_blank" rel="noopener" style="color:inherit;">Camboj Electricals</a></div>
+</div>
+
+<!-- CLIENT LOGOS -->
+<section class="clients-section">
+  <p class="clients-label">Trusted by industry leaders</p>
+  <div class="clients-logos reveal">
+    <div class="client-cell"><img src="logos/kfc.png" alt="KFC"></div>
+    <div class="client-cell"><img src="logos/pvr.png" alt="PVR" style="mix-blend-mode:screen"></div>
+    <div class="client-cell"><img src="logos/subway.png" alt="Subway"></div>
+    <div class="client-cell"><img src="logos/levis.png" alt="Levi's"></div>
+    <div class="client-cell"><img src="logos/delhi-airport.png" alt="Delhi Indira Gandhi International Airport"></div>
+    <div class="client-cell"><img src="logos/rebel-foods.png" alt="Rebel Foods" style="filter:invert(1)"></div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services-section" id="services">
+  <div class="section-header reveal">
+    <div class="eyebrow-row">
+      <div class="eyebrow-dot"></div>
+      <span class="eyebrow-text">Our expertise</span>
+    </div>
+    <div class="section-title">
+      <span class="section-title-line1">Designed for light.</span>
+      <span class="section-title-line2">Manufactured for life.</span>
+    </div>
+    <p class="section-desc">We do not import and trade. We custom engineer, test and deliver directly from our in-house manufacturing facilities.</p>
+  </div>
+  <div class="services-cards">
+    <div class="service-card reveal d1">
+      <div class="service-card-img">
+        <img src="https://www.figma.com/api/mcp/asset/89c0d5ad-8148-4eba-9b2b-6210ab27ce2f.png" alt="Downlights" loading="lazy">
+      </div>
+      <div class="service-card-body">
+        <h3 class="service-card-title">Downlights</h3>
+        <p class="service-card-desc">Engineered deep-recess anti-glare fixtures with customizable beam angles.</p>
+      </div>
+    </div>
+    <div class="service-card reveal d2">
+      <div class="service-card-img">
+        <img src="https://www.figma.com/api/mcp/asset/4712f9a2-e266-48a7-b655-a3535a7ae3df.png" alt="Custom Linear & Cove Lighting" loading="lazy">
+      </div>
+      <div class="service-card-body">
+        <h3 class="service-card-title">Custom Linear &amp; Cove Lighting</h3>
+        <p class="service-card-desc">Manufactured to exact millimetre project measurements to ensure zero dark spots.</p>
+      </div>
+    </div>
+    <div class="service-card reveal d3">
+      <div class="service-card-img">
+        <img src="https://www.figma.com/api/mcp/asset/3f43acfe-3902-4157-92fd-dceefd2ee141.png" alt="Full Project Lighting Design" loading="lazy">
+      </div>
+      <div class="service-card-body">
+        <h3 class="service-card-title">Full Project Lighting Design</h3>
+        <p class="service-card-desc">From Dialux simulation to custom-tested drivers, we manage the entire project.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY NEUHOM -->
+<section class="why-section" id="about">
+  <div class="section-header reveal">
+    <div class="eyebrow-row">
+      <div class="eyebrow-dot"></div>
+      <span class="eyebrow-text">The Neuhom Edge</span>
+    </div>
+    <div class="section-title">
+      <span class="section-title-line1">Direct from the factory floor</span>
+      <span class="section-title-line2">to your space</span>
+    </div>
+    <p class="section-desc">Since we manufacture our own LEDs, we control the entire lifecycle of light—guaranteeing flawless performance with none of the middleman markup.</p>
+  </div>
+  <div class="pillars-grid">
+    <div class="pillar-card reveal d1">
+      <div class="pillar-num-row">
+        <span class="pillar-num">01</span>
+        <div class="pillar-accent-line"></div>
+      </div>
+      <h3 class="pillar-title">Manufacturer, Not Trader</h3>
+      <p class="pillar-desc">We own our factories, meaning you get custom specs, direct pricing, and direct technical accountability. No imports, no surprises.</p>
+    </div>
+    <div class="pillar-card reveal d2">
+      <div class="pillar-num-row">
+        <span class="pillar-num">02</span>
+        <div class="pillar-accent-line"></div>
+      </div>
+      <h3 class="pillar-title">Design-First Execution</h3>
+      <p class="pillar-desc">Our lighting design team translates raw architecture into warm ambient spaces, calculating proper lux and thermal profiles.</p>
+    </div>
+    <div class="pillar-card reveal d3">
+      <div class="pillar-num-row">
+        <span class="pillar-num">03</span>
+        <div class="pillar-accent-line"></div>
+      </div>
+      <h3 class="pillar-title">Rapid Turnaround</h3>
+      <p class="pillar-desc">Built locally in our own Indian facilities. We deliver custom-cut profiles and fixtures in a fraction of standard lead times.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <div class="cta-title section-title reveal">
+    <span class="section-title-line1">Let's light up</span>
+    <span class="section-title-line2">your project</span>
+  </div>
+  <p class="cta-desc reveal d1">Whether you're scoping a massive resort layout or detailing a warm family living room, we provide free initial expert design consultation.</p>
+  <div class="cta-buttons reveal d2">
+    <a href="https://wa.me/919063616060?text=Hi%2C%20I%20am%20looking%20to%20discuss%20a%20lighting%20project." class="btn-wa" target="_blank" rel="noopener">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" stroke="#0d0d0e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Book a free consultation
+    </a>
+    <a href="https://wa.me/919063616060?text=Hi%2C%20I%20would%20like%20to%20request%20a%20callback%20to%20discuss%20a%20lighting%20project." class="btn-outline" target="_blank" rel="noopener">Request a callback</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-left">
+      <div class="footer-brand-group">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 532.82 217.39" height="90" style="display:block;"><defs><style>.hfc1{fill:#e9a95b}.hfc2{fill:#fff}.hfc3{opacity:0.56}.hfc4{fill:#f4f5f2}.hfc5{font-size:47.3px;font-family:ProductSans-Regular,Product Sans;fill:#f4f5f2}.hfc6{letter-spacing:-0.02em}.hfc7{letter-spacing:-0.01em}</style></defs><g><path class="hfc1" d="M71.87,106.06H53.77V72.22a16.94,16.94,0,0,0-5.25-12.43A17.15,17.15,0,0,0,36,54.57q-9.43,0-15.38,8.37A14,14,0,0,0,18.1,71v35.06H0V72.2A34.37,34.37,0,0,1,10.46,46.84,34.82,34.82,0,0,1,35.93,36.47,34.84,34.84,0,0,1,61.41,46.84,34.37,34.37,0,0,1,71.87,72.2Z"/><path class="hfc1" d="M152.85,72.15a35.68,35.68,0,0,1-.4,5.35H100a17.2,17.2,0,0,0,6.44,9A17.54,17.54,0,0,0,117.05,90a17,17,0,0,0,13.54-6.3l11,14.61a34.44,34.44,0,0,1-24.54,9.79A35.45,35.45,0,0,1,81.12,72.2,34.33,34.33,0,0,1,91.58,46.84a34.82,34.82,0,0,1,25.47-10.37,35.43,35.43,0,0,1,35.8,35.68ZM132.61,64q-5-9.39-15.56-9.39T101.36,64Z"/><path class="hfc1" d="M234.1,72.27a36,36,0,0,1-61.41,25.47,34.66,34.66,0,0,1-10.45-25.47V36.47h18.1V73.3A14.8,14.8,0,0,0,183,81.77q7.13,10.23,19.58,7.9a12.57,12.57,0,0,0,4.74-2Q216,81.78,216,72.27V36.47h18.1Z"/><path class="hfc2" d="M315.22,106.06h-18.1V72.22a16.9,16.9,0,0,0-5.25-12.43,17.13,17.13,0,0,0-12.51-5.22q-9.45,0-15.38,8.37A13.9,13.9,0,0,0,261.46,71v35.06H243.35V0h18.11V41a36.48,36.48,0,0,1,17.83-4.56,34.82,34.82,0,0,1,25.47,10.37A34.33,34.33,0,0,1,315.22,72.2Z"/><path class="hfc1" d="M385.27,82.39A11.53,11.53,0,0,0,376,86.91a16.61,16.61,0,0,1-26.7,0A11.53,11.53,0,0,0,340,82.39H329.23a32.66,32.66,0,0,0,9,15.89A34.87,34.87,0,0,0,387,98.21a32.75,32.75,0,0,0,9-15.82Z"/><path class="hfc2" d="M401.75,75.46v3.78H323.47V75.46a37.45,37.45,0,0,1,11.42-27.67,39.7,39.7,0,0,1,55.52,0A37.61,37.61,0,0,1,401.75,75.46Z"/><path class="hfc2" d="M532.82,106.06h-18.1V72.22A17.62,17.62,0,0,0,497,54.57,16.77,16.77,0,0,0,481.87,63v43.06h-18.1V72.22a16.94,16.94,0,0,0-5.25-12.43A17.15,17.15,0,0,0,446,54.57q-9.44,0-15.38,8.37A14,14,0,0,0,428.1,71v35.06H410V72.2a34.37,34.37,0,0,1,10.46-25.36,36.2,36.2,0,0,1,51,.22,36.2,36.2,0,0,1,50.95-.22A34.37,34.37,0,0,1,532.82,72.2Z"/><g class="hfc3"><path class="hfc4" d="M147.46,168.1q-3.36-3-9.72-3a14.39,14.39,0,0,0-11.91,5.48l5.31,3.63a8,8,0,0,1,6.42-3.19,6.62,6.62,0,0,1,4.31,1.42,4.51,4.51,0,0,1,1.73,3.61v.84a19.52,19.52,0,0,0-2.85-.86,18.65,18.65,0,0,0-4.41-.42,14.68,14.68,0,0,0-4.45.64,10.65,10.65,0,0,0-3.55,1.87,8.76,8.76,0,0,0-2.34,2.94,8.51,8.51,0,0,0-.84,3.82,9,9,0,0,0,.78,3.81,8.67,8.67,0,0,0,2.18,3,10.23,10.23,0,0,0,3.27,1.92,11.24,11.24,0,0,0,4,.7,8.82,8.82,0,0,0,4.67-1.11,12.23,12.23,0,0,0,3.1-2.69h.45v2.91h7.21V177Q150.81,171.08,147.46,168.1Zm-4.33,16.54a6.18,6.18,0,0,1-1.35,2,6.74,6.74,0,0,1-4.78,1.92,5.17,5.17,0,0,1-3.15-1,3.16,3.16,0,0,1-1.37-2.69,3.53,3.53,0,0,1,1.42-2.82,6.39,6.39,0,0,1,4.06-1.14,11.78,11.78,0,0,1,3,.36,15.88,15.88,0,0,1,2.65,1A6.23,6.23,0,0,1,143.13,184.64Z"/><path class="hfc4" d="M198,171.67a9.81,9.81,0,0,0-1.81-3.49,8.28,8.28,0,0,0-3-2.26,10.77,10.77,0,0,0-4.36-.81,10.47,10.47,0,0,0-5.7,1.48,11.32,11.32,0,0,0-3.63,3.55,8.21,8.21,0,0,0-3-3.58,9.1,9.1,0,0,0-5.26-1.45,9.89,9.89,0,0,0-4.89,1.23,9.47,9.47,0,0,0-3.49,3.24h-.45V166h-6.87v27.39h7.32v-13.3a12.84,12.84,0,0,1,.39-3.24,8.24,8.24,0,0,1,1.12-2.6,5.47,5.47,0,0,1,1.79-1.73,4.63,4.63,0,0,1,2.46-.65q4.8,0,4.8,5.59v15.93h7.32v-13.3a11.59,11.59,0,0,1,.43-3.24,8.29,8.29,0,0,1,1.17-2.6,5.52,5.52,0,0,1,1.87-1.73,5.06,5.06,0,0,1,2.57-.65c3.06,0,4.58,1.86,4.58,5.59v15.93h7.33V176.12A15.44,15.44,0,0,0,198,171.67Z"/><path class="hfc4" d="M231.36,173.82a14.37,14.37,0,0,0-2.88-4.6,13.38,13.38,0,0,0-4.19-3,11.87,11.87,0,0,0-5-1.09,10.3,10.3,0,0,0-5.25,1.23,8.16,8.16,0,0,0-3.13,3h-.45l.45-3.92v-12h-7.32v40h6.87v-3.3h.45a8.33,8.33,0,0,0,3.13,3,10.4,10.4,0,0,0,5.25,1.22,12,12,0,0,0,5-1.08,13.55,13.55,0,0,0,4.19-3,14.36,14.36,0,0,0,2.88-4.62,16.78,16.78,0,0,0,0-11.74Zm-6.88,9.12a7.63,7.63,0,0,1-1.62,2.46,7.18,7.18,0,0,1-2.32,1.56,6.88,6.88,0,0,1-2.76.56A7.38,7.38,0,0,1,215,187a6.82,6.82,0,0,1-2.32-1.54,7.43,7.43,0,0,1-1.62-2.45,9.09,9.09,0,0,1,0-6.6,7.47,7.47,0,0,1,1.62-2.46A7,7,0,0,1,215,172.4a7.38,7.38,0,0,1,2.77-.53,7.06,7.06,0,0,1,2.76.56,7.21,7.21,0,0,1,2.32,1.57,7.59,7.59,0,0,1,1.62,2.45,8.8,8.8,0,0,1,0,6.49Z"/><path class="hfc4" d="M274.23,154.29a4.78,4.78,0,0,0-5.17-1,4.76,4.76,0,0,0-1.51,1,4.86,4.86,0,0,0-1,1.48,4.91,4.91,0,0,0,0,3.69,4.86,4.86,0,0,0,1,1.48,4.6,4.6,0,0,0,1.51,1,4.68,4.68,0,0,0,1.81.36,4.6,4.6,0,0,0,3.36-1.37,4.65,4.65,0,0,0,0-6.65Z"/><path class="hfc4" d="M274.56,165.11v39.81a12.93,12.93,0,0,1-.72,4.59,8.45,8.45,0,0,1-2,3.08A7.3,7.3,0,0,1,269,214.3a11.12,11.12,0,0,1-3.25.54h-.3l-21.93,2.53a2.37,2.37,0,0,1-2.64-2.36v-3c0-5.69,5.15-7,10.75-5.95l11,2h2c1.68,0,2.52-1.1,2.52-3.32V165.11Z"/><path class="hfc4" d="M109.08,200.86a23.33,23.33,0,0,1-9.22-1.8,22.53,22.53,0,0,1-7.36-4.9,22.91,22.91,0,0,1-4.9-7.35,23.06,23.06,0,0,1,12.25-30.56,23.59,23.59,0,0,1,9.23-1.8,22.48,22.48,0,0,1,9.39,1.86,21.88,21.88,0,0,1,6.75,4.88l-5,4.89a16.57,16.57,0,0,0-4.4-3.38,14.09,14.09,0,0,0-6.63-1.49,16.8,16.8,0,0,0-6.27,1.17,15.15,15.15,0,0,0-8.58,8.52,18.63,18.63,0,0,0,0,13.52,15.46,15.46,0,0,0,3.45,5.19,15.08,15.08,0,0,0,5.13,3.32,16.77,16.77,0,0,0,6.27,1.16,15,15,0,0,0,7.13-1.64,17,17,0,0,0,4.24-3.18l3.87,6a21.38,21.38,0,0,1-5.31,3.51A23.53,23.53,0,0,1,109.08,200.86Z"/><path class="hfc4" d="M236.55,179.67a22.16,22.16,0,0,0-1.69,3.67,16.63,16.63,0,0,1,0-7.34A22.54,22.54,0,0,0,236.55,179.67Z"/><path class="hfc4" d="M246.67,190.64a17.88,17.88,0,0,1-2.45,1,12.67,12.67,0,0,1-2.83.63,13.34,13.34,0,0,1-2.83-2.16,12.94,12.94,0,0,1-2.2-2.92,12.31,12.31,0,0,1,.62-2.79,20.68,20.68,0,0,1,1-2.44,35.17,35.17,0,0,0,4,4.71A34.58,34.58,0,0,0,246.67,190.64Z"/><path class="hfc4" d="M252.72,193.8a15.69,15.69,0,0,1-3.76.43,16.35,16.35,0,0,1-3.76-.43,21.58,21.58,0,0,0,3.76-1.72A22.27,22.27,0,0,0,252.72,193.8Z"/><path class="hfc4" d="M242,172.67a34.48,34.48,0,0,0-4,4.7,20.68,20.68,0,0,1-1-2.44,12.45,12.45,0,0,1-.63-2.8,13.83,13.83,0,0,1,2.21-2.93,13,13,0,0,1,2.8-2.13,11.92,11.92,0,0,1,2.86.62,19.23,19.23,0,0,1,2.45,1A34.44,34.44,0,0,0,242,172.67Z"/><path class="hfc4" d="M254.31,185a32.05,32.05,0,0,1-5.35,4.33,31.5,31.5,0,0,1-5.34-4.33,31.11,31.11,0,0,1-4.33-5.34A32.77,32.77,0,0,1,249,170a32.71,32.71,0,0,1,9.66,9.66A31.52,31.52,0,0,1,254.31,185Z"/><path class="hfc4" d="M261.57,187.22a13.12,13.12,0,0,1-2.2,2.9,13.53,13.53,0,0,1-2.82,2.16,12.71,12.71,0,0,1-2.85-.63,17.77,17.77,0,0,1-2.44-1,35.83,35.83,0,0,0,4.71-4,35.08,35.08,0,0,0,4-4.71,19.21,19.21,0,0,1,1,2.44A13,13,0,0,1,261.57,187.22Z"/><path class="hfc4" d="M252.72,165.52a22.43,22.43,0,0,0-3.76,1.74,22.87,22.87,0,0,0-3.77-1.73,16.31,16.31,0,0,1,3.77-.42A16.93,16.93,0,0,1,252.72,165.52Z"/><path class="hfc4" d="M261.57,172.11a13.12,13.12,0,0,1-.62,2.82,19.21,19.21,0,0,1-1,2.44,36,36,0,0,0-8.65-8.65,14.74,14.74,0,0,1,5.32-1.64,12.8,12.8,0,0,1,2.77,2.12A13.67,13.67,0,0,1,261.57,172.11Z"/><path class="hfc4" d="M263.47,179.66a16.23,16.23,0,0,1-.41,3.69,22.62,22.62,0,0,0-1.69-3.68,23.17,23.17,0,0,0,1.7-3.68A16.71,16.71,0,0,1,263.47,179.66Z"/><text class="hfc5" transform="translate(292.88 192.55)"><tspan class="hfc6">C</tspan><tspan class="hfc7" x="33.54" y="0">o</tspan><tspan x="59.55" y="0">mpa</tspan><tspan class="hfc7" x="151.03" y="0">n</tspan><tspan x="176.2" y="0">y</tspan></text><text class="hfc5" transform="translate(40.18 192.55)">A</text></g></g></svg>
+      </div>
+      <p class="footer-about">Makers of premium architectural lighting systems. Engineered with 32 years of manufacturing excellence from <a href="https://www.cambojelectricals.com" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">Camboj Electricals</a>.</p>
+    </div>
+    <div class="footer-links-grid">
+      <div class="footer-col">
+        <span class="footer-col-title">Navigate</span>
+        <a href="/">Home</a>
+        <a href="#services">Services</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <div class="footer-col">
+        <span class="footer-col-title">Group</span>
+        <a href="https://www.cambojelectricals.com" target="_blank" rel="noopener">Camboj Electricals</a>
+        <p>Kalinga Brand</p>
+        <p>Servo LED</p>
+      </div>
+      <div class="footer-col">
+        <span class="footer-col-title">Connect</span>
+        <a href="https://wa.me/919063616060" target="_blank" rel="noopener">+91 90636 16060</a>
+        <a href="mailto:business@cambojelectricals.com">business@cambojelectricals.com</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Neuhom. All rights reserved. Est. 1992 under <a href="https://www.cambojelectricals.com" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">Camboj Electricals</a>.</span>
+    <span>Designed in India · Made by <a href="https://www.cambojelectricals.com" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">Camboj Electricals</a></span>
+  </div>
+</footer>
+
+<script>
+// ── SCROLL REVEAL ──
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('up'); io.unobserve(e.target); }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -48px 0px' });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+setTimeout(() => document.querySelectorAll('.reveal:not(.up)').forEach(el => el.classList.add('up')), 2000);
+
+// ── NAV SCROLL SHRINK ──
+const nav = document.querySelector('.nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+// ── HERO PARALLAX ──
+const heroBg = document.querySelector('.hero-bg img');
+window.addEventListener('scroll', () => {
+  if (heroBg) heroBg.style.transform = `translateY(${window.scrollY * 0.3}px)`;
+}, { passive: true });
+
+// ── NAV LINK ACTIVE STATE ──
+const sections = document.querySelectorAll('section[id], div[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+const sectionObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(a => a.classList.remove('active'));
+      const link = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { threshold: 0.4 });
+sections.forEach(s => sectionObserver.observe(s));
+</script>
+<script src="components.js"></script>
+</body>
+</html>
