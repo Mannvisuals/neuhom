@@ -63,15 +63,14 @@ export function Schedule({
   unit,
   selectedId,
   onSelect,
-  onAddLike,
-  onRemoveOne,
+  onResize,
 }: {
   fixtures: PlacedFixture[];
   unit: Unit;
   selectedId: string | null;
   onSelect: (id: string) => void;
-  onAddLike: (f: PlacedFixture) => void;
-  onRemoveOne: (f: PlacedFixture) => void;
+  /** set the number of fittings in a group; the group is re-spaced evenly */
+  onResize: (items: PlacedFixture[], n: number) => void;
 }) {
   const groups = groupFixtures(fixtures);
   if (!fixtures.length) {
@@ -115,10 +114,10 @@ export function Schedule({
                       <span className="shrink-0 text-[12.5px] font-semibold tabular">{qty}</span>
                       {!g.linear && (
                         <span className="flex shrink-0 items-center rounded-md border border-line bg-surface">
-                          <button type="button" aria-label={`Remove one ${fixtureLabel(g.type)}`} onClick={() => onRemoveOne(g.items[g.items.length - 1]!)} className="flex h-6 w-6 items-center justify-center text-ink-2 hover:text-ink">
+                          <button type="button" aria-label={`Remove one ${fixtureLabel(g.type)}`} onClick={() => onResize(g.items, g.items.length - 1)} className="flex h-6 w-6 items-center justify-center text-ink-2 hover:text-ink">
                             <Minus className="h-3 w-3" />
                           </button>
-                          <button type="button" aria-label={`Add one ${fixtureLabel(g.type)}`} onClick={() => onAddLike(g.items[g.items.length - 1]!)} className="flex h-6 w-6 items-center justify-center border-l border-line text-ink-2 hover:text-ink">
+                          <button type="button" aria-label={`Add one ${fixtureLabel(g.type)}`} onClick={() => onResize(g.items, g.items.length + 1)} className="flex h-6 w-6 items-center justify-center border-l border-line text-ink-2 hover:text-ink">
                             <Plus className="h-3 w-3" />
                           </button>
                         </span>

@@ -16,7 +16,7 @@ import { PlanCanvas } from "./PlanCanvas";
 import { PhotoView } from "./PhotoView";
 import { LayerToggles, Schedule } from "./Schedule";
 import { SummaryPanel } from "./SummaryPanel";
-import { createFixture, duplicateFixture, moveFixture, recode } from "./fixtureOps";
+import { createFixture, duplicateFixture, moveFixture, recode, resizeGroup } from "./fixtureOps";
 
 const FEATURE_LABEL: Record<string, string> = {
   living_room: "TV / feature wall",
@@ -165,8 +165,17 @@ export function DesignStudio() {
               select(id);
               setTab("plan");
             }}
-            onAddLike={duplicate}
-            onRemoveOne={(f) => remove(f.id)}
+            onResize={(items, n) => {
+              const ids = new Set(items.map((i) => i.id));
+              const next = resizeGroup(items, n, room);
+              edit((fs) => {
+                const at = fs.findIndex((f) => ids.has(f.id));
+                const rest = fs.filter((f) => !ids.has(f.id));
+                rest.splice(at < 0 ? rest.length : at, 0, ...next);
+                return rest;
+              });
+              if (selectedId && ids.has(selectedId) && !next.some((f) => f.id === selectedId)) select(null);
+            }}
           />
         </div>
       </aside>

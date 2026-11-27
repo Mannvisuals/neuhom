@@ -89,3 +89,57 @@ export function groupFixtures(fs: PlacedFixture[]): FixtureGroup[] {
   }
   return [...map.values()];
 }
+
+/**
+ * Even layout of exactly `n` points over a rectangle: rows chosen to match
+ * the room's proportions, fittings shared between rows as evenly as possible,
+ * each row centred with half-spacing to the walls.
+ */
+export function evenLayout(n: number, length: number, width: number): { x: number; y: number }[] {
+  if (n <= 0) return [];
+  const rows = clamp(Math.round(Math.sqrt((n * width) / length)), 1, n);
+  const base = Math.floor(n / rows);
+  const extra = n % rows;
+  const pts: { x: number; y: number }[] = [];
+  for (let j = 0; j < rows; j++) {
+    const k = base + (j < extra ? 1 : 0);
+    for (let i = 0; i < k; i++) pts.push({ x: r3(((i + 0.5) * length) / k), y: r3(((j + 0.5) * width) / rows) });
+  }
+  return pts;
+}
+
+const TOL = 0.05;
+
+/**
+ * Change how many fittings a schedule group has, re-spacing the whole group
+ * instead of stacking copies:
+ *  - ambient: even layout over the whole room
+ *  - fittings in a line (e.g. accents along a wall): evenly along that line
+ *  - anything else: a centred row around the existing fitting(s)
+ */
+export function resizeGroup(items: PlacedFixture[], n: number, room: ResolvedRoom): PlacedFixture[] {
+  if (n <= 0 || !items.length) return [];
+  const template = items[items.length - 1]!;
+  const make = (i: number, p: { x: number; y: number }): PlacedFixture => ({ ...(items[i] ?? { ...template, id: newId() }), x: p.x, y: p.y });
+
+  let pts: { x: number; y: number }[];
+  const sameY = items.length > 1 && items.every((f) => Math.abs(f.y - items[0]!.y) < TOL);
+  const sameX = items.length > 1 && items.every((f) => Math.abs(f.x - items[0]!.x) < TOL);
+
+  if (template.layer === "ambient") {
+    pts = evenLayout(n, room.length, room.width);
+  } else if (sameY) {
+    pts = Array.from({ length: n }, (_, i) => ({ x: r3(((i + 0.5) * room.length) / n), y: items[0]!.y }));
+  } else if (sameX) {
+    pts = Array.from({ length: n }, (_, i) => ({ x: items[0]!.x, y: r3(((i + 0.5) * room.width) / n) }));
+  } else if (n <= items.length) {
+    return items.slice(0, n);
+  } else {
+    // centred row around the group's centre, 0.8 m apart
+    const cx = items.reduce((s, f) => s + f.x, 0) / items.length;
+    const cy = items.reduce((s, f) => s + f.y, 0) / items.length;
+    const gap = Math.min(0.8, room.length / (n + 1));
+    pts = Array.from({ length: n }, (_, i) => ({ x: r3(clamp(cx + (i - (n - 1) / 2) * gap, 0, room.length)), y: r3(cy) }));
+  }
+  return pts.map((p, i) => make(i, p));
+}
