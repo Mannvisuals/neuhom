@@ -57,6 +57,8 @@ export interface Design {
   /** plain-language reasons for the main choices */
   rationale: string[];
   edited: boolean;
+  /** fingerprint of the project inputs the design was generated from */
+  inputs?: string;
 }
 
 export const isLinear = (f: Pick<PlacedFixture, "x2" | "y2">) => f.x2 !== undefined && f.y2 !== undefined;

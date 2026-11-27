@@ -10,18 +10,19 @@ import { ProjectStep } from "./steps/ProjectStep";
 import { PhotosStep } from "./steps/PhotosStep";
 import { SpaceStep } from "./steps/SpaceStep";
 import { NeedsStep } from "./steps/NeedsStep";
-import { AnalysisStep } from "./steps/AnalysisStep";
+import { PlanStep } from "./plan/PlanStep";
 import { DesignStudio } from "./studio/DesignStudio";
 
 export function Workspace() {
   const project = useWorkspace((s) => s.project)!;
   const saveState = useWorkspace((s) => s.saveState);
   const setStep = useWorkspace((s) => s.setStep);
-  const step = project.step;
+  // projects saved by earlier versions may be on the retired "analysis" step
+  const step = project.step === "analysis" ? "plan" : project.step;
 
   return (
     <div className={cn("flex min-h-dvh flex-col", step === "design" && "lg:h-dvh lg:overflow-hidden")}>
-      <header className="sticky top-0 z-30 border-b border-line bg-paper/95 backdrop-blur">
+      <header className="sticky top-0 z-30 border-b border-line bg-paper/95 backdrop-blur print:hidden">
         <div className="flex h-14 items-center gap-3 px-3 sm:px-5">
           <Link
             href="/projects"
@@ -35,14 +36,14 @@ export function Workspace() {
           <div className="min-w-0 flex-1 truncate text-[13.5px] font-semibold">{project.name || "Untitled project"}</div>
           <SaveIndicator state={saveState} />
         </div>
-        <Stepper current={step} onSelect={setStep} canOpenDesign={!!project.design || !!project.analysis} />
+        <Stepper current={step === "design" ? "plan" : step} onSelect={setStep} canOpenPlan={!!project.design} />
       </header>
       <div className="flex min-h-0 flex-1 flex-col">
         {step === "project" && <ProjectStep />}
         {step === "photos" && <PhotosStep />}
         {step === "space" && <SpaceStep />}
         {step === "needs" && <NeedsStep />}
-        {step === "analysis" && <AnalysisStep />}
+        {step === "plan" && <PlanStep />}
         {step === "design" && <DesignStudio />}
       </div>
     </div>
@@ -71,7 +72,7 @@ function SaveIndicator({ state }: { state: SaveState }) {
   );
 }
 
-function Stepper({ current, onSelect, canOpenDesign }: { current: StepId; onSelect: (s: StepId) => void; canOpenDesign: boolean }) {
+function Stepper({ current, onSelect, canOpenPlan }: { current: StepId; onSelect: (s: StepId) => void; canOpenPlan: boolean }) {
   const idx = STEPS.findIndex((s) => s.id === current);
   return (
     <nav aria-label="Design steps" className="overflow-x-auto px-3 sm:px-5">
@@ -79,7 +80,7 @@ function Stepper({ current, onSelect, canOpenDesign }: { current: StepId; onSele
         {STEPS.map((s, i) => {
           const active = s.id === current;
           const done = i < idx;
-          const disabled = s.id === "design" && !canOpenDesign && !active;
+          const disabled = s.id === "plan" && !canOpenPlan && !active;
           return (
             <li key={s.id} className="flex items-center">
               <button

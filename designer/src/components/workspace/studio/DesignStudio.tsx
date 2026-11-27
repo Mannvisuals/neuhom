@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ChevronDown, Map as MapIcon, Image as ImageIcon, Plus, Undo2, Wand2 } from "lucide-react";
+import { ArrowLeft, ChevronDown, Map as MapIcon, Image as ImageIcon, Plus, Undo2, Wand2 } from "lucide-react";
 import { Button, IconButton, Segmented, Switch, cn } from "@/components/ui/primitives";
 import { evaluateDesign } from "@/lib/design/evaluate";
 import { generateDesign } from "@/lib/design/generate";
@@ -183,6 +183,10 @@ export function DesignStudio() {
       {/* ── Centre: toolbar + canvas ── */}
       <section className="order-1 flex min-w-0 flex-col lg:order-2 lg:min-h-0">
         <div className="flex flex-wrap items-center gap-2 border-b border-line bg-paper px-3 py-2">
+          <Button size="sm" variant="ghost" icon={<ArrowLeft className="h-3.5 w-3.5" />} onClick={() => setStep("plan")}>
+            Your plan
+          </Button>
+          <span className="h-5 w-px bg-line" aria-hidden />
           <Segmented
             size="sm"
             ariaLabel="View"

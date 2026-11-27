@@ -43,7 +43,7 @@ export function SpaceStep() {
 
   return (
     <StepLayout
-      eyebrow="Step 3 of 6"
+      eyebrow="Step 3 of 5"
       title={`Describe the ${spaceLabel(p).toLowerCase()}`}
       description="Measurements make the calculation accurate. If you don't know one, mark it — we'll use a typical size and clearly label the result as preliminary."
       onBack={() => setStep("photos")}

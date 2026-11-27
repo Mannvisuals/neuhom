@@ -71,7 +71,7 @@ export function PhotosStep() {
 
   return (
     <StepLayout
-      eyebrow="Step 2 of 6"
+      eyebrow="Step 2 of 5"
       title="Show us the space"
       description="Photos help you compare the room before and after. Measurements come next — photos are never used as exact dimensions."
       onBack={() => setStep("project")}

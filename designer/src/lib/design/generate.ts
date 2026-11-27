@@ -17,6 +17,7 @@ import {
 } from "@/lib/lighting";
 import type { Project, Wall } from "@/lib/project/types";
 import { fixtureLabel } from "@/lib/project/options";
+import { designInputs } from "./inputs";
 import { fittingsOfType, type ReferenceFitting } from "./reference";
 import { resolvePreferences, type ResolvedPreferences } from "./preferences";
 import { pointOnWall, resolveProjectRoom, toRoomInput, wallGeometry } from "./room";
@@ -222,6 +223,7 @@ export function generateDesign(project: Project, concept: Concept = "tailored"):
     fixtures: assignCodes(drafts.map((d) => roundDraft(d, room))),
     rationale,
     edited: false,
+    inputs: designInputs(project),
   };
 }
 

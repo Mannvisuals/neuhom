@@ -107,7 +107,7 @@ function EmptyState({ onCreate, creating }: { onCreate: () => void; creating: bo
 function ProjectCard({ p, onRemove }: { p: ProjectSummary; onRemove: () => void }) {
   const cover = useAssetUrl(p.coverAssetId);
   const [menu, setMenu] = useState(false);
-  const step = STEPS.find((s) => s.id === p.step);
+  const step = STEPS.find((s) => s.id === (p.step === "design" || p.step === "analysis" ? "plan" : p.step));
   const space = SPACE_TYPES.find((s) => s.value === p.spaceType)?.label;
   return (
     <div className="group relative overflow-hidden rounded-lg border border-line bg-surface shadow-panel transition-[box-shadow,border-color] hover:border-line-strong hover:shadow-pop">

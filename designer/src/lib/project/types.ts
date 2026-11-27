@@ -10,14 +10,18 @@ export type Wall = "top" | "right" | "bottom" | "left";
 export type CeilingType = "false_ceiling" | "flat_slab" | "wood_ceiling" | "exposed_concrete";
 export type NaturalLight = "low" | "medium" | "high";
 
-export type StepId = "project" | "photos" | "space" | "needs" | "analysis" | "design";
+/**
+ * "plan" is the homeowner-friendly result page; "design" is the optional
+ * detailed editor reached from it. "analysis" is kept only so projects saved
+ * by earlier versions still open (it is shown as "plan").
+ */
+export type StepId = "project" | "photos" | "space" | "needs" | "analysis" | "plan" | "design";
 export const STEPS: { id: StepId; label: string }[] = [
   { id: "project", label: "Project" },
   { id: "photos", label: "Photos" },
   { id: "space", label: "Space" },
   { id: "needs", label: "Needs" },
-  { id: "analysis", label: "Analysis" },
-  { id: "design", label: "Design" },
+  { id: "plan", label: "Your plan" },
 ];
 
 export type AssetKind = "room_photo" | "floor_plan" | "reference";

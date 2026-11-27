@@ -29,11 +29,12 @@ export function NeedsStep() {
 
   return (
     <StepLayout
-      eyebrow="Step 4 of 6"
+      eyebrow="Step 4 of 5"
       title="How should it feel?"
       description="Choose the mood and how you'll use the space. Sensible defaults are already selected."
       onBack={() => setStep("space")}
-      onNext={() => setStep("analysis")}
+      onNext={() => setStep("plan")}
+      nextLabel="See my lighting plan"
       nextDisabled={!r.autoFixtures && r.fixtures.length === 0}
       nextHint={!r.autoFixtures && r.fixtures.length === 0 ? "Pick at least one fitting, or let Neuhom choose" : undefined}
       aside={

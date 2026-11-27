@@ -30,7 +30,7 @@ export function ProjectStep() {
 
   return (
     <StepLayout
-      eyebrow="Step 1 of 6"
+      eyebrow="Step 1 of 5"
       title="Start a new lighting project"
       description="A few basics so Neuhom can apply the right lighting guidance for this space."
       onNext={() => setStep("photos")}
