@@ -143,7 +143,7 @@ with `createConfig({...})`.
 ```bash
 npm test
 ```
-82 tests cover the formulas against hand calculations, monotonic behaviour,
+84 tests cover the formulas against hand calculations, monotonic behaviour,
 flux conservation of the beam model, grid constraints, assumption and status labelling,
 input validation, config overrides, determinism, and a guardrail that keeps AI and
 network code out of the engine. Mutation checks (breaking a formula on purpose)

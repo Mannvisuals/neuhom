@@ -60,10 +60,13 @@ export function fitGrid(length: number, width: number, minCount: number, maxSpac
     const count = rows * cols;
     const sx = length / cols;
     const sy = width / rows;
-    const squareness = Math.abs(sx - sy) / Math.max(sx, sy);
-    // Trade fixture count against an even, near-square pattern: a layout may
-    // use up to ~25% more fittings if that avoids long, thin spacing.
-    const score = count + squareness * need * 0.25;
+    // aspect 1 = square spacing; 3 = fittings three times closer one way
+    const aspect = Math.max(sx, sy) / Math.min(sx, sy);
+    // Trade fixture count against an even, near-square pattern. The penalty
+    // grows linearly with aspect, so a long thin line of fittings (e.g. 7 × 1
+    // in a small bathroom) loses to a balanced grid even if it needs one or
+    // two more fittings.
+    const score = count + (aspect - 1) * need * 0.25;
     if (!best || score < best.score) best = { rows, cols, score, count };
   }
   const { rows, cols } = best!;

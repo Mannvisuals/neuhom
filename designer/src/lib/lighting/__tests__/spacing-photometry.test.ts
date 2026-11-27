@@ -67,6 +67,26 @@ describe("grid fitting", () => {
     expect([g.cols, g.rows]).toEqual([5, 3]);
   });
 
+  it("never lines fittings up in a thin row when a balanced grid exists (bathroom regression)", () => {
+    // 8 × 6 ft bathroom needing 7 small downlights: previously produced 7 × 1 at 0.35 m spacing
+    const g = fitGrid(2.44, 1.83, 7, 2.07, DEFAULT_CONFIG);
+    expect(g.rows).toBeGreaterThan(1);
+    expect(Math.max(g.spacingX, g.spacingY) / Math.min(g.spacingX, g.spacingY)).toBeLessThan(2);
+  });
+
+  it("keeps spacing aspect under 2:1 across typical rooms", () => {
+    for (const [l, w, n, s] of [
+      [3.66, 3.35, 6, 2.4],
+      [5.49, 3.96, 10, 2.42],
+      [3.05, 2.44, 5, 2.4],
+      [9.14, 6.1, 16, 3.5],
+      [2.44, 1.83, 4, 2.07],
+    ] as const) {
+      const g = fitGrid(l, w, n, s, DEFAULT_CONFIG);
+      expect(Math.max(g.spacingX, g.spacingY) / Math.min(g.spacingX, g.spacingY), `${l}×${w}`).toBeLessThan(2);
+    }
+  });
+
   it("flags impractically dense layouts", () => {
     expect(fitGrid(2, 2, 36, 2, DEFAULT_CONFIG).tooDense).toBe(true);
   });
