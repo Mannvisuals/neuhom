@@ -1,0 +1,20 @@
+{
+  "name": "neuhom-designer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Neuhom AI Lighting Designer",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.7",
+    "typescript": "^5.9.3",
+    "vitest": "^5.1.2"
+  },
+  "type": "module"
+}
