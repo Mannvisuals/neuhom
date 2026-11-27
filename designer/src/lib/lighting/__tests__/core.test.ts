@@ -50,20 +50,20 @@ describe("utilisation factor (generic model)", () => {
 
   it("returns the base curve at reference reflectances (0.7 / 0.5)", () => {
     const r = uf.getUtilisation({ roomIndex: 1.0, reflectances: refl(0.7, 0.5), distribution: "direct_narrow" });
-    expect(r.value).toBe(0.62);
+    expect(r.value).toBe(0.67);
     expect(r.source).toBe("generic_model");
   });
 
   it("interpolates between tabulated room indices", () => {
     const r = uf.getUtilisation({ roomIndex: 1.125, reflectances: refl(0.7, 0.5), distribution: "direct_narrow" });
-    expect(r.value).toBeCloseTo((0.62 + 0.68) / 2, 3);
+    expect(r.value).toBeCloseTo((0.67 + 0.72) / 2, 3);
   });
 
   it("applies the wall factor, stronger in small rooms", () => {
-    // 0.62 × (1 − 0.35 × 0.2 × 1)
-    expect(uf.getUtilisation({ roomIndex: 1.0, reflectances: refl(0.7, 0.3), distribution: "direct_narrow" }).value).toBeCloseTo(0.577, 3);
-    // 0.78 × (1 − 0.35 × 0.2 × 0.5)
-    expect(uf.getUtilisation({ roomIndex: 2.0, reflectances: refl(0.7, 0.3), distribution: "direct_narrow" }).value).toBeCloseTo(0.753, 3);
+    // 0.67 × (1 − 0.35 × 0.2 × 1)
+    expect(uf.getUtilisation({ roomIndex: 1.0, reflectances: refl(0.7, 0.3), distribution: "direct_narrow" }).value).toBeCloseTo(0.623, 3);
+    // 0.80 × (1 − 0.35 × 0.2 × 0.5)
+    expect(uf.getUtilisation({ roomIndex: 2.0, reflectances: refl(0.7, 0.3), distribution: "direct_narrow" }).value).toBeCloseTo(0.772, 3);
   });
 
   it("is monotonic: larger rooms and lighter surfaces use more light", () => {
@@ -84,7 +84,7 @@ describe("utilisation factor (generic model)", () => {
   it("clamps very small/large room indices to the table range", () => {
     const r = uf.getUtilisation({ roomIndex: 0.2, reflectances: refl(0.7, 0.5), distribution: "direct_narrow" });
     expect(r.roomIndexUsed).toBe(0.6);
-    expect(r.value).toBe(0.48);
+    expect(r.value).toBe(0.55);
   });
 
   it("classifies fittings into distribution families", () => {
@@ -104,11 +104,11 @@ describe("maintenance factor (CIE 97 structure)", () => {
   });
 
   it("multiplies LLMF × LSF × LMF × RSMF", () => {
-    // 6 h/day × 365 × 5 yr = 10,950 h → LLMF = 1 − 0.3 × 0.438 = 0.8686
+    // 6 h/day × 365 × 5 yr = 10,950 h; default L80 @ 50,000 h → LLMF = 1 − 0.2 × 0.219 = 0.9562
     const mf = maintenanceFactor({ environment: "clean", dailyHours: 6 }, DEFAULT_CONFIG);
     expect(mf.operatingHours).toBe(10_950);
-    expect(mf.llmf).toBeCloseTo(0.869, 3);
-    expect(mf.value).toBeCloseTo(0.8686 * 1 * 0.95 * 0.97, 3);
+    expect(mf.llmf).toBeCloseTo(0.956, 3);
+    expect(mf.value).toBeCloseTo(0.9562 * 1 * 0.95 * 0.97, 3);
   });
 
   it("is lower in dirtier environments and with longer use", () => {
@@ -121,7 +121,7 @@ describe("maintenance factor (CIE 97 structure)", () => {
 
   it("uses datasheet LED rating when supplied", () => {
     const generic = maintenanceFactor({ environment: "clean", dailyHours: 6 }, DEFAULT_CONFIG);
-    const better = maintenanceFactor({ environment: "clean", dailyHours: 6, ledRating: { lumenMaintenance: 0.8, ratedHours: 50_000 } }, DEFAULT_CONFIG);
+    const better = maintenanceFactor({ environment: "clean", dailyHours: 6, ledRating: { lumenMaintenance: 0.9, ratedHours: 60_000 } }, DEFAULT_CONFIG);
     expect(better.value).toBeGreaterThan(generic.value);
     expect(better.ledRatingSource).toBe("product_datasheet");
   });

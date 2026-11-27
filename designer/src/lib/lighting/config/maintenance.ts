@@ -29,11 +29,13 @@ export const ROOM_SURFACE_MAINTENANCE: Record<Environment, number> = {
 
 export const LED_DEFAULTS = {
   /**
-   * Conservative generic LED rating used when the product datasheet doesn't
-   * state one: L70 at 25,000 h (70% of initial output remains after 25,000 h).
+   * Generic LED rating used when the product datasheet doesn't state one:
+   * L80 at 50,000 h (80% of initial output remains after 50,000 h), typical
+   * of decent current LED fittings. Gives overall MF ≈ 0.8–0.85, in line with
+   * common industry practice for LED installations.
    */
-  ratedLumenMaintenance: 0.7,
-  ratedHours: 25_000,
+  ratedLumenMaintenance: 0.8,
+  ratedHours: 50_000,
   /** design maintenance period, years */
   maintenancePeriodYears: 5,
   lampSurvivalFactor: 1.0,

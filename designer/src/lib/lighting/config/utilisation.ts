@@ -21,8 +21,9 @@ import type { Distribution } from "../types";
  *    Indirect (cove) lighting depends heavily on the ceiling; direct
  *    downlights much less.
  *
- * These are approximations for early design. They are always reported to the
- * user as "generic_model" assumptions.
+ * These are approximations for early design, calibrated so that typical rooms
+ * get fitting counts in line with practical Indian installations (see the
+ * calibration tests). They are always reported as "generic_model" assumptions.
  */
 
 export interface UtilisationProfile {
@@ -43,28 +44,30 @@ export const UTILISATION_PROFILES: Record<Distribution, UtilisationProfile> = {
   direct_narrow: {
     label: "Direct, narrow beam (spotlights, COB downlights ≤ 45°)",
     roomIndices: K,
-    base: [0.48, 0.56, 0.62, 0.68, 0.72, 0.78, 0.82, 0.85, 0.88, 0.9],
+    base: [0.55, 0.62, 0.67, 0.72, 0.75, 0.8, 0.83, 0.86, 0.89, 0.91],
     alpha: 0.35,
-    beta: 0.1,
+    beta: 0.05,
   },
   direct_wide: {
     label: "Direct, wide beam (downlights, panels > 45°)",
     roomIndices: K,
-    base: [0.38, 0.46, 0.52, 0.58, 0.63, 0.69, 0.74, 0.77, 0.81, 0.84],
+    base: [0.46, 0.53, 0.58, 0.63, 0.67, 0.72, 0.76, 0.79, 0.83, 0.86],
     alpha: 0.5,
-    beta: 0.2,
+    beta: 0.1,
   },
   general_diffuse: {
     label: "General diffuse (pendants, opal shades, surface fittings)",
     roomIndices: K,
-    base: [0.3, 0.37, 0.42, 0.47, 0.51, 0.57, 0.62, 0.65, 0.7, 0.73],
+    base: [0.34, 0.41, 0.46, 0.51, 0.55, 0.6, 0.65, 0.68, 0.72, 0.75],
     alpha: 0.6,
-    beta: 0.5,
+    beta: 0.4,
   },
   indirect: {
+    // Includes typical cove-trough losses: in a gypsum cove roughly 40% of the
+    // strip's output is absorbed by the trough before reaching the ceiling.
     label: "Indirect (cove lighting, uplighters)",
     roomIndices: K,
-    base: [0.2, 0.25, 0.29, 0.33, 0.36, 0.41, 0.45, 0.48, 0.52, 0.55],
+    base: [0.12, 0.15, 0.17, 0.2, 0.22, 0.25, 0.27, 0.29, 0.31, 0.33],
     alpha: 0.6,
     beta: 1.2,
   },

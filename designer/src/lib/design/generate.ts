@@ -25,6 +25,9 @@ import { LAYERS, type Concept, type Design, type Layer, type PlacedFixture } fro
 
 const round = (v: number, dp = 3) => Math.round(v * 10 ** dp) / 10 ** dp;
 
+/** Largest share of the ambient target a cove may cover when sizing downlights. */
+export const MAX_COVE_SHARE = 0.5;
+
 let idCounter = 0;
 export const newId = (prefix = "f") => `${prefix}_${Date.now().toString(36)}${(idCounter++).toString(36)}${Math.random().toString(36).slice(2, 6)}`;
 
@@ -100,22 +103,27 @@ export function generateDesign(project: Project, concept: Concept = "tailored"):
 
   // ── Ambient grid ─────────────────────────────────────────────────────
   const candidates = fittingsOfType(prefs.ambientType);
-  let best: { ref: ReferenceFitting; result: ReturnType<typeof calculateAmbient>; score: number } | undefined;
+  // Coves are mood light on their own switch: downlights always provide at least
+  // half of the general light so the room is usable with the cove off.
+  const targetLux = Math.round(
+    Math.min(std.ambient.max, Math.max(std.ambient.min, std.ambient.target * DEFAULT_CONFIG.brightnessMultiplier[prefs.brightness])),
+  );
+  const coveCredit = Math.min(coveLux, targetLux * MAX_COVE_SHARE);
+  let best: { ref: ReferenceFitting; result: ReturnType<typeof calculateAmbient>; total: number; score: number } | undefined;
   for (const ref of candidates) {
-    const result = calculateAmbient({ room: roomInput, fixture: toSpec(ref), brightness: prefs.brightness, otherAmbientLux: coveLux });
+    const result = calculateAmbient({ room: roomInput, fixture: toSpec(ref), brightness: prefs.brightness, otherAmbientLux: coveCredit });
+    // everything on: downlights plus the cove's full output
+    const total = result.achievedLux - coveCredit + coveLux;
+    const inRange = total >= std.ambient.min && total <= std.ambient.max;
     const tooDense = result.warnings.some((w) => w.code === "too_dense");
-    const score =
-      (result.withinRange ? 0 : 1000) +
-      (tooDense ? 500 : 0) +
-      result.quantity * 3 +
-      (Math.abs(result.achievedLux - result.target.lux) / result.target.lux) * 20;
-    if (!best || score < best.score) best = { ref, result, score };
+    const score = (inRange ? 0 : 1000) + (tooDense ? 500 : 0) + result.quantity * 3 + (Math.abs(total - targetLux) / targetLux) * 20;
+    if (!best || score < best.score) best = { ref, result, total, score };
   }
   const ambientTarget = best!.result.target.lux;
   let ambientLux = coveLux;
   if (best && best.result.layout) {
     for (const p of best.result.layout.positions) drafts.push(fromReference(best.ref, "ambient", prefs, p));
-    ambientLux = best.result.achievedLux;
+    ambientLux = Math.round(best.total);
     rationale.push(
       `${best.result.quantity} × ${best.ref.label.toLowerCase()} on a ${best.result.layout.cols} × ${best.result.layout.rows} grid give about ${ambientLux} lux (target ${ambientTarget}).`,
     );
@@ -192,7 +200,7 @@ export function generateDesign(project: Project, concept: Concept = "tailored"):
     const mf = maintenanceFactor({ environment: room.environment, dailyHours: std.dailyHours }, DEFAULT_CONFIG).value;
     const opts = fittingsOfType(prefs.accentType);
     const pickFor = (beam: number) =>
-      calculateAccent({ spaceType: project.spaceType, ambientLux: Math.max(ambientLux, 50), distance, incidenceAngleDeg: 60, beamAngle: beam, maintenanceFactor: mf });
+      calculateAccent({ spaceType: project.spaceType, ambientLux: Math.max(targetLux, 50), distance, incidenceAngleDeg: 60, beamAngle: beam, maintenanceFactor: mf });
     const ref = opts.find((o) => o.lumens >= pickFor(o.beamAngle).requiredLumens) ?? opts[opts.length - 1]!;
     const n = Math.max(2, Math.round(fwg.length / 1.2));
     for (let i = 0; i < n; i++) {

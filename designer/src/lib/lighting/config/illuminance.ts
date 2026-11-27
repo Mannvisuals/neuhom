@@ -79,7 +79,7 @@ export const SPACE_STANDARDS: Record<SpaceType, SpaceStandard> = {
   bedroom: {
     spaceType: "bedroom",
     label: "Bedroom",
-    ambient: { min: 75, target: 100, max: 150 },
+    ambient: { min: 75, target: 100, max: 200 },
     tasks: {
       bedside_reading: { label: "Bedside reading", min: 200, target: 300, max: 500, planeHeight: 0.6, plane: "horizontal" },
       wardrobe: { label: "Wardrobe front", min: 150, target: 200, max: 300, planeHeight: 1.2, plane: "vertical" },

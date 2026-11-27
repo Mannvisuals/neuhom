@@ -30,7 +30,7 @@ typical daily hours.
 | Space | Ambient (lx) | Task targets | Source |
 |---|---|---|---|
 | Living room | 100 / **150** / 250 | Reading 300 | Neuhom default |
-| Bedroom | 75 / **100** / 150 | Bedside reading 300, wardrobe 200 (vertical) | Neuhom default |
+| Bedroom | 75 / **100** / 200 | Bedside reading 300, wardrobe 200 (vertical) | Neuhom default |
 | Kitchen | 200 / **300** / 400 | Counter 500, hob 500 | Neuhom default |
 | Dining | 100 / **150** / 200 | Table 200 | Neuhom default |
 | Bathroom | 150 / **200** / 300 | Mirror 300 (vertical) · IP44 min | Neuhom default |
@@ -64,12 +64,12 @@ IES/LDT files can replace the generic model without changing anything else.
 
 ### 4. Maintenance factor (MF) — `maintenance.ts`
 CIE 97 structure: `MF = LLMF × LSF × LMF × RSMF`
-- LLMF: LED output loss, linear to the rated L-value (default L70 @ 25,000 h when
+- LLMF: LED output loss, linear to the rated L-value (default L80 @ 50,000 h when
   the datasheet doesn't say) over a 5-year period at the room's daily hours.
 - LSF: 1.0 (failed LEDs replaced promptly).
 - LMF / RSMF: dirt on fittings / room surfaces, by environment (clean / normal / dirty).
 
-Typical result: living room ≈ 0.80, kitchen ≈ 0.75.
+Typical result: living room ≈ 0.88, kitchen ≈ 0.81, office ≈ 0.85.
 
 ### 5. Lumen method — `ambient.ts`
 ```
@@ -120,17 +120,30 @@ Product data outside 30–220 lm/W is flagged as suspect.
 | Room size if unknown | typical Indian sizes | `neuhom_default` → `preliminary` | Measurements |
 | Photo-estimated sizes | as estimated | `photo_estimate` → `preliminary` | Measurements |
 | Utilisation factor | generic model | `generic_model` | Manufacturer UF table / IES file |
-| LED lumen maintenance | L70 @ 25,000 h, linear | `generic_model` | Product datasheet (LM-80/TM-21) |
+| LED lumen maintenance | L80 @ 50,000 h, linear | `generic_model` | Product datasheet (LM-80/TM-21) |
 | Maintenance period | 5 years, ~annual cleaning | `neuhom_default` | Client maintenance plan |
 | Dirt factors | clean 0.95/0.97, normal 0.90/0.94, dirty 0.85/0.90 | `generic_model` | Site assessment |
 | Task local UF | 0.45–0.6 | `generic_model` | Photometric calculation |
 | Accent incidence | 30° | `neuhom_default` | Actual aiming |
-| Cove share of ambient | 30% | `neuhom_default` | Designer choice |
+| Cove share of ambient | 30% target; at most 50% credited when sizing downlights | `neuhom_default` | Designer choice |
+| Cove trough losses | ~40% of strip output (built into indirect UF) | `generic_model` | Photometric data for the cove detail |
+| Generic fitting efficacy | 100–110 lm/W (downlights, panels, strips); 90–95 lm/W (COB/track) | `neuhom_default` | Product datasheet |
 | Spacing rules | beam-edge overlap, S/H ≤ 1.5 | `generic_model` | Manufacturer max S/H |
 | Electricity tariff | ₹8/kWh | `neuhom_default` | User's bill |
 
 All of these live in `src/lib/lighting/config/` and can be overridden per project
 with `createConfig({...})`.
+
+## Calibration (November 2026)
+The first version stacked cautious margins: 85–90 lm/W fittings, L70 @ 25,000 h
+LEDs, low utilisation curves and a strong dark-ceiling penalty. Together they
+meant only ~32% of installed light was counted, so a 15 × 10 ft office got
+15 × 18 W surface downlights (270 W). After recalibration the same room gets
+8 × 18 W (144 W), or 4 × 2×2 ft panels with a false ceiling.
+`src/lib/design/__tests__/calibration.test.ts` holds practical fitting-count
+ranges for common rooms; any change to the engine must keep them passing.
+These ranges should be refined with Neuhom's own installation experience and
+replaced by product photometry (IES) when available.
 
 ## Path to photometric accuracy
 1. Parse IES (LM-63) / EULUMDAT files into an intensity table.
@@ -143,7 +156,7 @@ with `createConfig({...})`.
 ```bash
 npm test
 ```
-84 tests cover the formulas against hand calculations, monotonic behaviour,
+The engine tests cover the formulas against hand calculations, monotonic behaviour,
 flux conservation of the beam model, grid constraints, assumption and status labelling,
 input validation, config overrides, determinism, and a guardrail that keeps AI and
 network code out of the engine. Mutation checks (breaking a formula on purpose)
