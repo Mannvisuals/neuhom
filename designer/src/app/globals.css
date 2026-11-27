@@ -1,0 +1,128 @@
+@import "tailwindcss";
+
+/*
+ * NEUHOM DESIGN TOKENS
+ * Warm paper and plaster neutrals, near-black ink, one brass accent that
+ * evokes light. Layer colours are used only for fixture symbols and chips.
+ */
+@theme {
+  --font-sans: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Playfair Display", ui-serif, Georgia, serif;
+
+  --color-canvas: #f6f4ef;
+  --color-surface: #ffffff;
+  --color-sunken: #efece5;
+  --color-paper: #fbfaf7;
+
+  --color-ink: #191712;
+  --color-ink-2: #4b473f;
+  --color-muted: #858074;
+  --color-faint: #b3ada1;
+
+  --color-line: #e5e1d8;
+  --color-line-strong: #d2ccc0;
+
+  --color-brand: #e9a95b;
+  --color-brass: #b8792f;
+  --color-brass-ink: #8a5718;
+  --color-brass-soft: #f7ead8;
+
+  --color-ambient: #b8792f;
+  --color-task: #3d6b8c;
+  --color-accent: #b0503a;
+  --color-decorative: #55775a;
+
+  --color-ok: #2f6b4f;
+  --color-ok-soft: #e3efe8;
+  --color-warn: #9a5b12;
+  --color-warn-soft: #fbefdc;
+  --color-danger: #a33a2c;
+  --color-danger-soft: #f8e4e0;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+
+  --shadow-panel: 0 1px 2px rgb(25 23 18 / 0.04), 0 4px 16px -6px rgb(25 23 18 / 0.08);
+  --shadow-pop: 0 2px 4px rgb(25 23 18 / 0.06), 0 12px 32px -8px rgb(25 23 18 / 0.18);
+
+  --text-micro: 11px;
+  --text-micro--line-height: 16px;
+  --text-micro--letter-spacing: 0.06em;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+    font-feature-settings: "ss01", "cv11";
+  }
+  ::selection {
+    background: var(--color-brass-soft);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-brass);
+    outline-offset: 2px;
+  }
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@utility eyebrow {
+  font-size: var(--text-micro);
+  line-height: var(--text-micro--line-height);
+  letter-spacing: var(--text-micro--letter-spacing);
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+/* Architectural drawing paper for the plan canvas */
+@utility drafting-paper {
+  background-color: var(--color-paper);
+  background-image:
+    linear-gradient(to right, rgb(25 23 18 / 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(25 23 18 / 0.035) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@utility animate-fade-up {
+  animation: fade-up 280ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
