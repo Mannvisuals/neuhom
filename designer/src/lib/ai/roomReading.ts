@@ -10,6 +10,7 @@
 import { z } from "zod";
 
 const confidence = z.enum(["low", "medium", "high"]);
+const wallEnum = z.enum(["top", "right", "bottom", "left"]);
 
 export const roomReadingSchema = z.object({
   roomType: z.object({
@@ -45,6 +46,25 @@ export const roomReadingSchema = z.object({
   activities: z.array(z.enum(["reading", "cooking", "working", "grooming", "dining", "entertaining", "display"])),
   observations: z.array(z.object({ text: z.string(), confidence })),
   suggestions: z.array(z.object({ text: z.string(), layer: z.enum(["ambient", "task", "accent", "decorative"]) })),
+  /**
+   * Layout in plan terms: top / right / bottom / left of the floor-plan
+   * drawing, or — with photos only — relative to photo 1 taken from the
+   * doorway (far wall = top, left = left, right = right, behind = bottom).
+   */
+  layout: z.object({
+    frame: z.enum(["floor_plan", "photo", "unknown"]),
+    windows: z.array(wallEnum),
+    entrance: z.enum(["top", "right", "bottom", "left", "unsure"]),
+    mainWall: z.object({ wall: z.enum(["top", "right", "bottom", "left", "unsure"]), what: z.string() }),
+    counterWalls: z.array(wallEnum),
+    zones: z.array(
+      z.object({
+        kind: z.enum(["sofa", "tv", "bed", "wardrobe", "dining_table", "desk", "stove", "sink", "shelves", "vanity", "artwork", "other"]),
+        wall: z.enum(["top", "right", "bottom", "left", "centre"]),
+        description: z.string(),
+      }),
+    ),
+  }),
   floorPlan: z.object({
     provided: z.boolean(),
     rooms: z.array(

@@ -103,7 +103,7 @@ export function SummaryPanel({
         {LAYERS.map((l) => (
           <span key={l.value} className="flex items-center gap-1.5 tabular">
             <span className="h-2 w-2 rounded-full" style={{ background: l.color }} />
-            {l.label} {m.counts[l.value]}
+            {l.label} {m.layerItems[l.value]}
           </span>
         ))}
       </div>

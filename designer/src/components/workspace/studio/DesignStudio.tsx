@@ -133,7 +133,7 @@ export function DesignStudio() {
     return <div className="flex flex-1 items-center justify-center text-muted">Generating design…</div>;
   }
 
-  const counts = metrics.counts;
+  const counts = metrics.layerItems;
   const concept = CONCEPTS.find((c) => c.value === design.concept)!;
   const roomPhotos = p.assets.filter((a) => a.kind === "room_photo");
   const toggleLayer = (l: Layer) =>
@@ -258,6 +258,8 @@ export function DesignStudio() {
               windows={p.space.windows}
               featureWall={p.space.featureWall}
               featureLabel={FEATURE_LABEL[p.spaceType] ?? "Feature wall"}
+              counters={p.space.counterWalls}
+              zones={p.space.zones}
               selectedId={selectedId}
               warnIds={warnIds}
               onSelect={select}

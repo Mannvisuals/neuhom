@@ -105,6 +105,23 @@ export const FIXTURE_TYPES: { value: FixtureType; label: string; short: string }
   { value: "panel", label: "Panel lights", short: "Panel" },
 ];
 
+export const ZONE_KINDS: { value: import("./types").ZoneKind; label: string }[] = [
+  { value: "sofa", label: "Sofa / seating" },
+  { value: "tv", label: "TV unit" },
+  { value: "bed", label: "Bed" },
+  { value: "wardrobe", label: "Wardrobe" },
+  { value: "dining_table", label: "Dining table" },
+  { value: "desk", label: "Desk / study" },
+  { value: "stove", label: "Stove / hob" },
+  { value: "sink", label: "Sink" },
+  { value: "shelves", label: "Open shelves" },
+  { value: "vanity", label: "Mirror / vanity" },
+  { value: "artwork", label: "Artwork / feature" },
+  { value: "other", label: "Other" },
+];
+
+export const zoneLabel = (k: import("./types").ZoneKind) => ZONE_KINDS.find((z) => z.value === k)?.label ?? k;
+
 export const fixtureLabel = (t: FixtureType) => FIXTURE_TYPES.find((f) => f.value === t)?.short ?? t;
 
 export const ACTIVITIES: { value: Activity; label: string }[] = [
@@ -144,6 +161,9 @@ export function defaultSpace(): SpaceDetails {
     floorFinish: "light_marble_or_tile",
     windows: [],
     featureWall: "top",
+    counterWalls: [],
+    zones: [],
+    aiFilled: [],
     existingLightPoints: null,
     naturalLight: "medium",
     furnitureNotes: "",

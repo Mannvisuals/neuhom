@@ -31,6 +31,8 @@ export interface PlanCanvasProps {
   windows: Wall[];
   featureWall: Wall;
   featureLabel: string;
+  counters?: Wall[];
+  zones?: { id: string; kind: string; wall: Wall | "centre"; label: string }[];
   selectedId: string | null;
   warnIds: Set<string>;
   onSelect: (id: string | null) => void;
@@ -126,6 +128,48 @@ export function PlanCanvas(props: PlanCanvasProps) {
           {Array.from({ length: Math.floor(room.width) }, (_, i) => (
             <line key={`gy${i}`} x1={X(0)} y1={Y(i + 1)} x2={X(room.length)} y2={Y(i + 1)} strokeDasharray="2 4" />
           ))}
+        </g>
+
+        {/* counters (60 cm deep) and furniture, drawn faintly for reference */}
+        <g pointerEvents="none">
+          {(props.counters ?? []).map((c) => {
+            const d = 0.6 * scale;
+            const r =
+              c === "top"
+                ? { x: X(0), y: Y(0), w: room.length * scale, h: d }
+                : c === "bottom"
+                  ? { x: X(0), y: Y(room.width) - d, w: room.length * scale, h: d }
+                  : c === "left"
+                    ? { x: X(0), y: Y(0), w: d, h: room.width * scale }
+                    : { x: X(room.length) - d, y: Y(0), w: d, h: room.width * scale };
+            return <rect key={c} x={r.x} y={r.y} width={r.w} height={r.h} fill="var(--color-sunken)" stroke="var(--color-line-strong)" strokeDasharray="4 3" />;
+          })}
+          {(props.zones ?? []).map((z) => {
+            const same = (props.zones ?? []).filter((o) => o.wall === z.wall);
+            const k = same.findIndex((o) => o.id === z.id);
+            const frac = (k + 1) / (same.length + 1);
+            const inset = 0.35;
+            const m =
+              z.wall === "top"
+                ? { x: room.length * frac, y: inset }
+                : z.wall === "bottom"
+                  ? { x: room.length * frac, y: room.width - inset }
+                  : z.wall === "left"
+                    ? { x: inset + 0.2, y: room.width * frac }
+                    : z.wall === "right"
+                      ? { x: room.length - inset - 0.2, y: room.width * frac }
+                      : { x: room.length * (0.5 + (k - (same.length - 1) / 2) * 0.2), y: room.width / 2 + 0.45 };
+            const text = z.kind.replace("_", " ");
+            const w = text.length * 6 + 12;
+            return (
+              <g key={z.id} transform={`translate(${X(m.x)} ${Y(m.y)})`}>
+                <rect x={-w / 2} y={-8} width={w} height={16} rx={8} fill="var(--color-surface)" stroke="var(--color-ink)" strokeOpacity={0.18} strokeDasharray="3 2" />
+                <text textAnchor="middle" y={3.5} fontSize={9.5} fill="var(--color-muted)">
+                  {text}
+                </text>
+              </g>
+            );
+          })}
         </g>
 
         {/* light pools */}

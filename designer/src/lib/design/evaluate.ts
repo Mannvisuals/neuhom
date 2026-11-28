@@ -62,7 +62,10 @@ export interface DesignMetrics {
   method: "density" | "lux";
   /** state from the design's method — use this for the headline verdict */
   state: "low" | "ok" | "high";
+  /** point fittings per layer (pieces) */
   counts: Record<Layer, number>;
+  /** everything on each layer, strips included — for layer toggles and legends */
+  layerItems: Record<Layer, number>;
   totalFixtures: number;
   totalLinearMetres: number;
   connectedLoadW: number;
@@ -163,6 +166,8 @@ export function evaluateDesign(project: Project, design: Design): DesignMetrics 
 
   // ── Counts & energy ──
   const counts: Record<Layer, number> = { ambient: 0, task: 0, accent: 0, decorative: 0 };
+  const layerItems: Record<Layer, number> = { ambient: 0, task: 0, accent: 0, decorative: 0 };
+  for (const f of design.fixtures) layerItems[f.layer] += 1;
   let linearM = 0;
   for (const f of design.fixtures) {
     if (isLinear(f)) linearM += fixtureLength(f);
@@ -204,6 +209,7 @@ export function evaluateDesign(project: Project, design: Design): DesignMetrics 
     method,
     state: primary,
     counts,
+    layerItems,
     totalFixtures: counts.ambient + counts.task + counts.accent + counts.decorative,
     totalLinearMetres: Math.round(linearM * 10) / 10,
     connectedLoadW: energy.connectedLoadW,

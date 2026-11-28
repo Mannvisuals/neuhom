@@ -12,6 +12,8 @@ export function RoomSketch({
   featureWall,
   featureLabel,
   assumed,
+  counters = [],
+  zones = [],
 }: {
   length: number;
   width: number;
@@ -20,6 +22,8 @@ export function RoomSketch({
   featureWall: Wall;
   featureLabel: string;
   assumed: boolean;
+  counters?: Wall[];
+  zones?: { id: string; kind: string; wall: Wall | "centre" }[];
 }) {
   const pad = 34;
   const maxW = 272;
@@ -79,7 +83,38 @@ export function RoomSketch({
           </g>
         );
       })}
+      {/* counters: 60 cm deep bands */}
+      {counters.map((c) => {
+        const d = 0.6 * scale;
+        const r = c === "top" ? { x: x0, y: y0, w, h: d } : c === "bottom" ? { x: x0, y: y0 + h - d, w, h: d } : c === "left" ? { x: x0, y: y0, w: d, h } : { x: x0 + w - d, y: y0, w: d, h };
+        return <rect key={c} x={r.x} y={r.y} width={r.w} height={r.h} fill="var(--color-sunken)" stroke="var(--color-line-strong)" />;
+      })}
       <line {...fw} stroke="var(--color-brass)" strokeWidth={3} strokeLinecap="round" />
+      {/* furniture and fixtures */}
+      {zones.map((z, i) => {
+        const inset = 26;
+        const same = zones.filter((o) => o.wall === z.wall);
+        const k = same.findIndex((o) => o.id === z.id);
+        const frac = (k + 1) / (same.length + 1);
+        const pos =
+          z.wall === "top"
+            ? { x: x0 + w * frac, y: y0 + inset }
+            : z.wall === "bottom"
+              ? { x: x0 + w * frac, y: y0 + h - inset }
+              : z.wall === "left"
+                ? { x: x0 + inset + 8, y: y0 + h * frac }
+                : z.wall === "right"
+                  ? { x: x0 + w - inset - 8, y: y0 + h * frac }
+                  : { x: x0 + w * (0.5 + (k - (same.length - 1) / 2) * 0.18), y: y0 + h / 2 };
+        return (
+          <g key={z.id ?? i}>
+            <rect x={pos.x - 26} y={pos.y - 8} width={52} height={16} rx={3} fill="var(--color-surface)" stroke="var(--color-ink)" strokeOpacity={0.25} />
+            <text x={pos.x} y={pos.y + 3.5} textAnchor="middle" fontSize={9} fill="var(--color-ink-2)">
+              {z.kind.replace("_", " ")}
+            </text>
+          </g>
+        );
+      })}
       <text
         x={featureWall === "left" ? fwMid.x + 8 : featureWall === "right" ? fwMid.x - 8 : fwMid.x}
         y={fwMid.y + labelOffset + (featureWall === "left" || featureWall === "right" ? 4 : 0)}

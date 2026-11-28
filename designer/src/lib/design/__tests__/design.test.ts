@@ -152,3 +152,46 @@ describe("placement rules", () => {
     expect(t.y).toBeGreaterThan(0.1); // not on the top (window) wall
   });
 });
+
+describe("layout-driven placement", () => {
+  const near = (v: number, target: number, tol = 0.5) => Math.abs(v - target) <= tol;
+
+  it("puts an under-cabinet strip along each counter run of an L-shaped kitchen", () => {
+    const p = project("kitchen", { counterWalls: ["top", "left"] });
+    const strips = generateDesign(p).fixtures.filter((f) => f.layer === "task" && isLinear(f));
+    expect(strips).toHaveLength(2);
+    expect(strips.some((f) => near(f.y, 0.3, 0.05) && near(f.y2!, 0.3, 0.05))).toBe(true); // along top
+    expect(strips.some((f) => near(f.x, 0.3, 0.05) && near(f.x2!, 0.3, 0.05))).toBe(true); // along left
+  });
+
+  it("puts bedside lights on the bed's wall, not the default wall", () => {
+    const p = project("bedroom", { featureWall: "top", zones: [{ id: "b", kind: "bed", wall: "left", label: "Bed", source: "ai" }] });
+    const lights = generateDesign(p).fixtures.filter((f) => f.layer === "task" && f.type === "wall_light");
+    expect(lights).toHaveLength(2);
+    expect(lights.every((f) => f.x < 0.1)).toBe(true);
+  });
+
+  it("aims accent lights at the TV wall", () => {
+    const p = project("living_room", { featureWall: "top", zones: [{ id: "t", kind: "tv", wall: "right", label: "TV unit", source: "ai" }] });
+    const d = generateDesign(p, "warm_cosy");
+    const room = evaluateDesign(p, d).room;
+    const accents = d.fixtures.filter((f) => f.layer === "accent");
+    expect(accents.length).toBeGreaterThan(0);
+    expect(accents.every((f) => f.x > room.length - 1.1)).toBe(true);
+    expect(d.rationale.join(" ")).toMatch(/right wall \(tv unit\)/);
+  });
+
+  it("hangs the dining pendant over a table that stands against a wall", () => {
+    const p = project("dining_room", { zones: [{ id: "d", kind: "dining_table", wall: "bottom", label: "Table", source: "user" }] });
+    const d = generateDesign(p);
+    const room = evaluateDesign(p, d).room;
+    const pendants = d.fixtures.filter((f) => f.type === "pendant");
+    expect(pendants.length).toBeGreaterThan(0);
+    expect(pendants.every((f) => near(f.y, room.width - 0.9, 0.05))).toBe(true);
+  });
+
+  it("adds a desk light when there is a desk", () => {
+    const p = project("bedroom", { zones: [{ id: "k", kind: "desk", wall: "right", label: "Study desk", source: "user" }] });
+    expect(generateDesign(p).rationale.join(" ")).toMatch(/desk on the right wall/);
+  });
+});

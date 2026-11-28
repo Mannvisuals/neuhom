@@ -41,6 +41,29 @@ export interface DimensionValue {
   unknown: boolean;
 }
 
+export type ZoneKind =
+  | "sofa"
+  | "tv"
+  | "bed"
+  | "wardrobe"
+  | "dining_table"
+  | "desk"
+  | "stove"
+  | "sink"
+  | "shelves"
+  | "vanity"
+  | "artwork"
+  | "other";
+
+/** A piece of furniture or fixture, placed against a wall of the plan (or in the centre). */
+export interface Zone {
+  id: string;
+  kind: ZoneKind;
+  wall: Wall | "centre";
+  label: string;
+  source: "ai" | "user";
+}
+
 export interface SpaceDetails {
   unit: Unit;
   length: DimensionValue;
@@ -52,6 +75,12 @@ export interface SpaceDetails {
   windows: Wall[];
   /** wall with the bed / TV / counter / vanity / display, used to place task and accent lights */
   featureWall: Wall;
+  /** kitchens: walls the counters run along (L-shape = two walls) */
+  counterWalls?: Wall[];
+  /** furniture and fixtures that lights should relate to */
+  zones?: Zone[];
+  /** fields last filled in from the AI reading, for "from your photo" badges */
+  aiFilled?: string[];
   existingLightPoints: number | null;
   naturalLight: NaturalLight;
   furnitureNotes: string;

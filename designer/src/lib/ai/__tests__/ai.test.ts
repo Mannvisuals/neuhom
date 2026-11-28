@@ -22,6 +22,17 @@ const reading = (over: Partial<RoomReading> = {}): RoomReading =>
     activities: ["reading", "display"],
     observations: [{ text: "Plain plastered ceiling", confidence: "high" }],
     suggestions: [{ text: "Wash the painting with an adjustable spot", layer: "accent" }],
+    layout: {
+      frame: "photo",
+      windows: ["left"],
+      entrance: "bottom",
+      mainWall: { wall: "top", what: "back counter with the chimney point" },
+      counterWalls: ["top", "left"],
+      zones: [
+        { kind: "stove", wall: "top", description: "Stove below the chimney outlet" },
+        { kind: "shelves", wall: "top", description: "Open shelves above the back counter" },
+      ],
+    },
     floorPlan: { provided: true, rooms: [{ name: "Store", writtenAs: "6x5", lengthFt: 6, widthFt: 5, matchesProject: false }, { name: "Living", writtenAs: "18'0\" x 13'6\"", lengthFt: 18, widthFt: 13.5, matchesProject: true }, { name: "Loft", writtenAs: "?", lengthFt: null, widthFt: null, matchesProject: false }], notes: "" },
     ...over,
   });
@@ -58,6 +69,40 @@ describe("AI suggestions", () => {
   it("offers existing light points for renovations", () => {
     expect(buildSuggestions(reading(), project()).some((x) => x.key === "points")).toBe(true);
     expect(buildSuggestions(reading(), project({ kind: "new_construction" })).some((x) => x.key === "points")).toBe(false);
+  });
+});
+
+describe("layout suggestions", () => {
+  it("offers windows, main wall, counter runs and furniture in plan terms", () => {
+    const s = buildSuggestions(reading(), project({ spaceType: "kitchen" }));
+    const by = Object.fromEntries(s.map((x) => [x.key, x]));
+    expect(by.windows!.value).toMatch(/left/);
+    expect(by.counterWalls!.value).toMatch(/L-shaped/);
+    expect(by.zones!.value).toMatch(/Stove/);
+    let p = project({ spaceType: "kitchen" });
+    for (const x of s) p = x.apply(p);
+    expect(p.space.windows).toEqual(["left"]);
+    expect(p.space.counterWalls).toEqual(["top", "left"]);
+    expect(p.space.zones!.map((z) => z.kind)).toEqual(["stove", "shelves"]);
+    expect(p.space.furnitureNotes).toMatch(/chimney/);
+    expect(p.space.aiFilled).toEqual(expect.arrayContaining(["windows", "counterWalls", "zones", "ceiling"]));
+  });
+
+  it("skips layout when the AI couldn't tell orientation", () => {
+    const r = reading({ layout: { frame: "unknown", windows: [], entrance: "unsure", mainWall: { wall: "unsure", what: "" }, counterWalls: [], zones: [] } });
+    expect(buildSuggestions(r, project()).some((x) => ["windows", "featureWall", "counterWalls", "zones"].includes(x.key))).toBe(false);
+  });
+
+  it("does not pre-tick 'no false ceiling' on a new build", () => {
+    const s = buildSuggestions(reading(), project({ kind: "new_construction" })).find((x) => x.key === "ceiling")!;
+    expect(s.recommended).toBe(false);
+    expect(s.value).toMatch(/false ceiling is planned/);
+  });
+
+  it("keeps the user's own furniture when re-applying AI zones", () => {
+    const p = project({ space: { ...defaultSpace(), zones: [{ id: "u1", kind: "sofa", wall: "right", label: "Sofa", source: "user" }] } });
+    const zs = buildSuggestions(reading(), p).find((x) => x.key === "zones")!.apply(p).space.zones!;
+    expect(zs.some((z) => z.id === "u1")).toBe(true);
   });
 });
 

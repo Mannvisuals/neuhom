@@ -74,7 +74,7 @@ function whereFor(f: PlacedFixture, p: Project): string {
     case "cove":
       return "Hidden in the false-ceiling edge";
     case "led_strip":
-      return f.layer === "task" ? "Under the wall cabinets" : "Hidden in a recess";
+      return f.layer === "task" ? "Under the wall cabinets" : f.layer === "accent" ? "Along the front of the open shelves" : "Hidden in a recess";
     case "wall_light":
       return p.spaceType === "bathroom" ? "Beside or above the mirror" : p.spaceType === "bedroom" ? "Either side of the bed" : "On the wall beside the seating";
     case "pendant":
@@ -131,7 +131,15 @@ export function describeLights(design: Design, p: Project): { layer: Layer; text
       case "cove":
         return { layer: l.layer, text: "A soft, hidden glow around the edge of the ceiling that makes the room feel calm and spacious." };
       case "led_strip":
-        return { layer: l.layer, text: l.layer === "task" ? "Strip lights under the cabinets so your worktop is bright and shadow-free." : `${l.quantity} m of hidden strip light for a gentle glow.` };
+        return {
+          layer: l.layer,
+          text:
+            l.layer === "task"
+              ? "Strip lights under the cabinets so your worktop is bright and shadow-free."
+              : l.layer === "accent"
+                ? "A slim strip along the front of the open shelves to light what's on display."
+                : `${l.quantity} m of hidden strip light for a gentle glow.`,
+        };
       case "chandelier":
         return { layer: l.layer, text: "A statement chandelier in the centre as the room's focal point." };
       case "pendant":

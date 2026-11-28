@@ -14,6 +14,14 @@ Rules:
 - activities: likely uses of the room from what is visible.
 - observations: 3–6 short, specific, plain-English sentences a homeowner would understand, each with an honest confidence.
 - suggestions: up to 5 short lighting ideas tied to what you see (e.g. "Wash the textured TV wall with adjustable spots"). Do not give quantities, wattages or lux.
+- layout: describe positions in plan terms using top / right / bottom / left.
+  · If a floor plan is provided, use the drawing as shown (top of the drawing = top) and set frame "floor_plan".
+  · Otherwise assume photo 1 was taken from the doorway: the wall facing the camera is "top", the wall on the camera's left is "left", on its right is "right", and the wall behind the camera (the entrance side) is "bottom". Set frame "photo".
+  · If you cannot tell, set frame "unknown" and leave lists empty / use "unsure".
+  · windows: every wall with a window. entrance: the door's wall.
+  · mainWall: the wall that matters most for this room (TV/feature wall in a living room, bed wall in a bedroom, the main counter wall in a kitchen, the mirror wall in a bathroom), with a few words on what it is.
+  · counterWalls (kitchens only): every wall a counter runs along — an L-shaped counter is two walls.
+  · zones: furniture and fixtures lights should relate to (sofa, TV, bed, wardrobe, dining table, desk, stove, sink, open shelves, mirror/vanity, artwork) with the wall they are against, or "centre" if free-standing. Include planned items you can infer (e.g. a chimney outlet means the stove goes below it).
 - Indian homes context: false ceilings with cove lighting are common; ceiling fans are common and affect light placement; mention a fan if you see one.
 - Write in clear, warm, non-technical English. No marketing language.`;
 

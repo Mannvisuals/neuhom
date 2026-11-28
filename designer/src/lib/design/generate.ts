@@ -16,7 +16,7 @@ import {
   type FixtureSpec,
   type ResolvedRoom,
 } from "@/lib/lighting";
-import type { Project, Wall } from "@/lib/project/types";
+import type { Project, Wall, Zone } from "@/lib/project/types";
 import { fixtureLabel } from "@/lib/project/options";
 import { designInputs } from "./inputs";
 import { fittingsOfType, type ReferenceFitting } from "./reference";
@@ -124,37 +124,64 @@ export function generateDesign(project: Project, concept: Concept = "tailored"):
     );
   }
 
-  // ── Task ─────────────────────────────────────────────────────────────
+  // ── Layout: walls of furniture and fixtures (from the user or the AI reading) ──
   const fw = project.space.featureWall;
-  const fwg = wallGeometry(fw, room);
+  const zones = project.space.zones ?? [];
+  /** wall of the first zone of a kind that sits against a wall */
+  const zoneWall = (...kinds: Zone["kind"][]): Wall | undefined =>
+    zones.find((z) => kinds.includes(z.kind) && z.wall !== "centre")?.wall as Wall | undefined;
+  const hasZone = (kind: Zone["kind"]) => zones.some((z) => z.kind === kind);
+  const wallName = (w: Wall) => `${w} wall`;
+
+  // ── Task ─────────────────────────────────────────────────────────────
   for (const kind of prefs.taskKinds) {
     if (kind === "counter_strip") {
-      const run = Math.max(0.6, fwg.length - 0.6);
-      const req = calculateTask({ spaceType: "kitchen", taskKey: "counter", kind: "linear_under_cabinet", zoneLength: run, zoneDepth: 0.6 });
+      // one strip under the wall cabinets along every counter run (L / U shapes)
+      const runs: Wall[] = project.space.counterWalls?.length ? [...new Set(project.space.counterWalls)] : [zoneWall("stove", "sink") ?? fw];
       const opts = fittingsOfType("led_strip");
+      const longest = Math.max(...runs.map((w) => wallGeometry(w, room).length));
+      const req = calculateTask({ spaceType: "kitchen", taskKey: "counter", kind: "linear_under_cabinet", zoneLength: Math.max(0.6, longest - 0.6), zoneDepth: 0.6 });
       const strip = opts.find((o) => o.lumens >= req.requiredLumensPerMetre!) ?? opts[opts.length - 1]!;
-      const a = pointOnWall(fw, room, 0.3, 0.3);
-      const b = pointOnWall(fw, room, fwg.length - 0.3, 0.3);
-      drafts.push(fromReference(strip, "task", prefs, { x: a.x, y: a.y, x2: b.x, y2: b.y }, { ipRating: "IP20" }));
-      rationale.push(`Under-cabinet strip (${strip.lumens} lm/m) along the counter wall for about 500 lux on worktops.`);
+      for (const w of runs) {
+        const g = wallGeometry(w, room);
+        const a = pointOnWall(w, room, 0.3, 0.3);
+        const b = pointOnWall(w, room, g.length - 0.3, 0.3);
+        drafts.push(fromReference(strip, "task", prefs, { x: a.x, y: a.y, x2: b.x, y2: b.y }, { ipRating: "IP20" }));
+      }
+      rationale.push(
+        runs.length > 1
+          ? `Under-cabinet strips (${strip.lumens} lm/m) along each counter run — ${runs.map(wallName).join(" and ")} — so every worktop is lit without shadows.`
+          : `Under-cabinet strip (${strip.lumens} lm/m) along the counter on the ${wallName(runs[0]!)} for shadow-free worktops.`,
+      );
     }
     if (kind === "bedside") {
+      const w = zoneWall("bed") ?? fw;
+      const g = wallGeometry(w, room);
       const ref = fittingsOfType("wall_light")[0]!;
-      const mid = fwg.length / 2;
+      const mid = g.length / 2;
       for (const along of [mid - 1.1, mid + 1.1]) {
-        drafts.push(fromReference(ref, "task", prefs, pointOnWall(fw, room, Math.max(0.3, Math.min(fwg.length - 0.3, along)), 0.05)));
+        drafts.push(fromReference(ref, "task", prefs, pointOnWall(w, room, Math.max(0.3, Math.min(g.length - 0.3, along)), 0.05)));
       }
-      rationale.push("A pair of wall lights either side of the bed for reading without lighting the whole room.");
+      rationale.push(`A pair of wall lights either side of the bed on the ${wallName(w)}, for reading without lighting the whole room.`);
     }
     if (kind === "reading_wall") {
-      // a wall next to the feature wall, avoiding windows
-      const opposite = { top: "bottom", bottom: "top", left: "right", right: "left" } as const;
-      const adjacent: Wall[] = fw === "top" || fw === "bottom" ? ["left", "right"] : ["top", "bottom"];
-      const windows = project.space.windows;
-      const side: Wall = adjacent.find((w) => !windows.includes(w)) ?? (!windows.includes(opposite[fw]) ? opposite[fw] : adjacent[0]!);
-      const g = wallGeometry(side, room);
-      drafts.push(fromReference(fittingsOfType("wall_light")[0]!, "task", prefs, pointOnWall(side, room, g.length / 2, 0.05)));
-      rationale.push("A wall light beside the seating for reading.");
+      const sofa = zoneWall("sofa");
+      let side: Wall;
+      let along: number;
+      if (sofa) {
+        // beside one end of the sofa
+        side = sofa;
+        along = wallGeometry(sofa, room).length * 0.2;
+      } else {
+        // a wall next to the feature wall, avoiding windows
+        const opposite = { top: "bottom", bottom: "top", left: "right", right: "left" } as const;
+        const adjacent: Wall[] = fw === "top" || fw === "bottom" ? ["left", "right"] : ["top", "bottom"];
+        const windows = project.space.windows;
+        side = adjacent.find((w) => !windows.includes(w)) ?? (!windows.includes(opposite[fw]) ? opposite[fw] : adjacent[0]!);
+        along = wallGeometry(side, room).length / 2;
+      }
+      drafts.push(fromReference(fittingsOfType("wall_light")[0]!, "task", prefs, pointOnWall(side, room, along, 0.05)));
+      rationale.push(sofa ? `A reading light beside the sofa on the ${wallName(sofa)}.` : "A wall light beside the seating for reading.");
     }
     if (kind === "table_pendant") {
       const count = room.length >= 3.6 ? 2 : 1;
@@ -171,24 +198,41 @@ export function generateDesign(project: Project, concept: Concept = "tailored"):
       });
       const ref = (req.quantity ?? 1) > count ? opts[opts.length - 1]! : opts[0]!;
       const drop = Math.max(0.3, room.ceilingHeight - 0.75 - 1.5);
+      // over the table: centre of the room, or 0.9 m out from the wall it stands against
+      const tw = zoneWall("dining_table");
+      const centre = tw ? pointOnWall(tw, room, wallGeometry(tw, room).length / 2, 0.9) : { x: room.length / 2, y: room.width / 2 };
+      const alongX = !tw || tw === "top" || tw === "bottom";
       for (let i = 0; i < count; i++) {
-        const x = count === 1 ? room.length / 2 : room.length / 2 + (i - 0.5) * 0.8;
-        drafts.push(fromReference(ref, "task", prefs, { x, y: room.width / 2 }, { suspensionLength: round(drop, 2) }));
+        const off = count === 1 ? 0 : (i - 0.5) * 0.8;
+        drafts.push(fromReference(ref, "task", prefs, alongX ? { x: centre.x + off, y: centre.y } : { x: centre.x, y: centre.y + off }, { suspensionLength: round(drop, 2) }));
       }
       rationale.push(`${count === 1 ? "A pendant" : "Two pendants"} hung about 75 cm above the table for a focused pool of light.`);
     }
     if (kind === "mirror") {
+      const w = zoneWall("vanity") ?? fw;
+      const g = wallGeometry(w, room);
       const opts = fittingsOfType("wall_light");
       const mf = maintenanceFactor({ environment: room.environment, dailyHours: std.dailyHours }, DEFAULT_CONFIG).value;
       const req = calculateAccent({ spaceType: "bathroom", ambientLux: 300, ratio: 1, distance: 0.6, incidenceAngleDeg: 0, beamAngle: 110, maintenanceFactor: mf });
       const ref = opts.find((o) => o.lumens >= req.requiredLumens) ?? opts[opts.length - 1]!;
-      drafts.push(fromReference(ref, "task", prefs, pointOnWall(fw, room, fwg.length / 2, 0.05), { ipRating: wallIp ?? "IP44" }));
-      rationale.push("A mirror light at face height for shadow-free grooming.");
+      drafts.push(fromReference(ref, "task", prefs, pointOnWall(w, room, g.length / 2, 0.05), { ipRating: wallIp ?? "IP44" }));
+      rationale.push(`A mirror light at face height on the ${wallName(w)} for shadow-free grooming.`);
     }
   }
 
+  // Desk or study table: a focused light above it
+  const desk = zoneWall("desk");
+  if (desk && project.spaceType !== "office") {
+    const g = wallGeometry(desk, room);
+    const ref = fittingsOfType(prefs.ambientType === "panel" ? "recessed_downlight" : prefs.ambientType)[0]!;
+    drafts.push(fromReference(ref, "task", prefs, pointOnWall(desk, room, g.length / 2, 0.6)));
+    rationale.push(`A focused light above the desk on the ${wallName(desk)}.`);
+  }
+
   // ── Accent: wall washing the feature wall ────────────────────────────
-  if (prefs.accent && fwg.length >= 1.5) {
+  const accentWall = zoneWall("tv", "artwork") ?? fw;
+  const awg = wallGeometry(accentWall, room);
+  if (prefs.accent && awg.length >= 1.5) {
     const drop = Math.max(0.6, room.ceilingHeight - 1.5);
     const offset = round(Math.min(1.0, Math.max(0.5, drop * Math.tan(Math.PI / 6))), 2);
     const distance = drop / Math.cos(Math.PI / 6);
@@ -197,12 +241,26 @@ export function generateDesign(project: Project, concept: Concept = "tailored"):
     const pickFor = (beam: number) =>
       calculateAccent({ spaceType: project.spaceType, ambientLux: Math.max(targetLux, 50), distance, incidenceAngleDeg: 60, beamAngle: beam, maintenanceFactor: mf });
     const ref = opts.find((o) => o.lumens >= pickFor(o.beamAngle).requiredLumens) ?? opts[opts.length - 1]!;
-    const n = Math.max(2, Math.round(fwg.length / 1.2));
+    const n = Math.max(2, Math.round(awg.length / 1.2));
     for (let i = 0; i < n; i++) {
-      const along = ((i + 0.5) * fwg.length) / n;
-      drafts.push(fromReference(ref, "accent", prefs, pointOnWall(fw, room, along, offset)));
+      const along = ((i + 0.5) * awg.length) / n;
+      drafts.push(fromReference(ref, "accent", prefs, pointOnWall(accentWall, room, along, offset)));
     }
-    rationale.push(`${n} adjustable ${fixtureLabel(prefs.accentType).toLowerCase()}s ${Math.round(offset * 100)} cm from the feature wall, aimed at about 30°, for a ${std.accentRatio.target}:1 highlight.`);
+    const what = zones.find((z) => (z.kind === "tv" || z.kind === "artwork") && z.wall === accentWall)?.label;
+    rationale.push(
+      `${n} adjustable ${fixtureLabel(prefs.accentType).toLowerCase()}s ${Math.round(offset * 100)} cm from the ${wallName(accentWall)}${what ? ` (${what.toLowerCase()})` : ""}, aimed at about 30°, for a ${std.accentRatio.target}:1 highlight.`,
+    );
+  }
+
+  // Open shelves with display: a slim strip along their front edge
+  const shelves = zoneWall("shelves");
+  if (shelves && hasZone("shelves") && project.requirements.activities.includes("display") && prefs.concept !== "minimal_functional") {
+    const g = wallGeometry(shelves, room);
+    const opts = fittingsOfType("led_strip");
+    const a = pointOnWall(shelves, room, 0.4, 0.15);
+    const b = pointOnWall(shelves, room, Math.max(0.8, g.length - 0.4), 0.15);
+    drafts.push(fromReference(opts[0]!, "accent", prefs, { x: a.x, y: a.y, x2: b.x, y2: b.y }));
+    rationale.push(`A slim strip along the front of the open shelves on the ${wallName(shelves)} to light what's on display.`);
   }
 
   // ── Decorative ───────────────────────────────────────────────────────

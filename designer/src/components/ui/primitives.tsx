@@ -74,6 +74,7 @@ export function Field({
   error,
   htmlFor,
   optional,
+  aside,
   children,
   className,
 }: {
@@ -82,6 +83,8 @@ export function Field({
   error?: string;
   htmlFor?: string;
   optional?: boolean;
+  /** small element shown after the label, e.g. a "From your photo" badge */
+  aside?: ReactNode;
   children: ReactNode;
   className?: string;
 }) {
@@ -90,6 +93,7 @@ export function Field({
       <label htmlFor={htmlFor} className="flex items-baseline gap-2 text-[13px] font-medium text-ink">
         {label}
         {optional && <span className="text-[12px] font-normal text-muted">Optional</span>}
+        {aside}
       </label>
       {children}
       {error ? (
