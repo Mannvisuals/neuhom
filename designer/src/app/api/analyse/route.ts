@@ -13,6 +13,8 @@ import { analyseRequestSchema, roomReadingSchema, type AnalyseResponse } from "@
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
+// always evaluate at request time so a newly added key is picked up
+export const dynamic = "force-dynamic";
 
 const MODEL = process.env.NEUHOM_VISION_MODEL || "claude-opus-5-5";
 

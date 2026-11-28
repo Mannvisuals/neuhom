@@ -69,7 +69,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 export function DemoNotice({ compact }: { compact?: boolean }) {
   const [ai, setAi] = useState<boolean | null>(null);
   useEffect(() => {
-    fetch("/api/analyse")
+    fetch("/api/analyse", { cache: "no-store" })
       .then((r) => r.json())
       .then((j: { configured?: boolean }) => setAi(!!j.configured))
       .catch(() => setAi(false));
