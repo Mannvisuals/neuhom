@@ -8,7 +8,9 @@ affected by anything here.
 - **Projects dashboard** — create, reopen and delete projects.
 - **Guided steps** — project basics → photos & floor plans → space details
   (with "I don't know" for any dimension) → needs → analysis → design.
-- **Rule-based space analysis** — clearly labelled; no AI is connected yet.
+- **AI photo & floor-plan reading** (`/api/analyse`, Claude) — suggests ceiling, finishes,
+  features and lighting ideas; reads sizes written on plans; the user accepts each suggestion.
+  Works only when `ANTHROPIC_API_KEY` is set on the server; otherwise manual entry.
 - **Design studio** — a scaled reflected-ceiling plan with ambient, task,
   accent and decorative layers; drag, add, remove, duplicate and edit fittings;
   layer toggles; light pools; five design concepts; undo; saved versions.

@@ -1,6 +1,7 @@
 import type { SpaceType, WallFinish, FloorFinish, BrightnessPreference } from "@/lib/lighting";
 import type { Design } from "@/lib/design/types";
 import type { SpaceAnalysis } from "@/lib/design/analysis";
+import type { StoredReading } from "@/lib/ai/roomReading";
 
 export type DesignStyle = "minimal" | "contemporary" | "luxury" | "modern" | "traditional" | "custom";
 export type ProjectKind = "new_construction" | "renovation";
@@ -108,6 +109,8 @@ export interface Project {
   space: SpaceDetails;
   requirements: Requirements;
   analysis: SpaceAnalysis | null;
+  /** latest AI photo/floor-plan reading, if the user ran one */
+  aiReading?: StoredReading | null;
   design: Design | null;
   versions: DesignVersion[];
 }

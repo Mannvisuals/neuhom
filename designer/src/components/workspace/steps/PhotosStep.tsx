@@ -9,6 +9,7 @@ import { useWorkspace } from "@/lib/project/store";
 import type { AssetKind, AssetMeta } from "@/lib/project/types";
 import { useAssetUrl } from "@/lib/project/useAssetUrl";
 import { StepLayout } from "../StepLayout";
+import { AiReadingPanel } from "../ai/AiReadingPanel";
 
 const KINDS: { value: AssetKind; label: string; hint: string; accept: string }[] = [
   { value: "room_photo", label: "Room photos", hint: "Wide shots from the corners work best. Daylight and evening both help.", accept: "image/jpeg,image/png,image/webp" },
@@ -157,6 +158,8 @@ export function PhotosStep() {
             ))}
           </ul>
         )}
+
+        <AiReadingPanel />
       </div>
     </StepLayout>
   );

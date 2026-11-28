@@ -1,6 +1,6 @@
 "use client";
 
-import { Info } from "lucide-react";
+import { Info, Sparkles } from "lucide-react";
 import { DEFAULT_CONFIG } from "@/lib/lighting";
 import { Field, NumberInput, Panel, Segmented, Select, cn } from "@/components/ui/primitives";
 import { fromDisplay, toDisplay } from "@/lib/design/room";
@@ -67,6 +67,13 @@ export function SpaceStep() {
         </Panel>
       }
     >
+      {p.aiReading && p.aiReading.applied.length > 0 && (
+        <div className="flex items-start gap-2.5 rounded-lg border border-brass/25 bg-brass-soft/60 px-4 py-3 text-[13px] leading-snug text-brass-ink">
+          <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+          Some details below were filled in from your photo analysis. Please check they&apos;re right.
+        </div>
+      )}
+
       <FormSection title="Dimensions" description="Measure wall to wall, and floor to ceiling (or false ceiling).">
         <div className="flex items-center gap-3">
           <span className="text-[13px] text-ink-2">Units</span>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FolderOpen, Layers3, LayoutGrid, UserRound } from "lucide-react";
@@ -66,15 +67,22 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 }
 
 export function DemoNotice({ compact }: { compact?: boolean }) {
+  const [ai, setAi] = useState<boolean | null>(null);
+  useEffect(() => {
+    fetch("/api/analyse")
+      .then((r) => r.json())
+      .then((j: { configured?: boolean }) => setAi(!!j.configured))
+      .catch(() => setAi(false));
+  }, []);
   return (
     <div className={cn("rounded-md border border-line bg-surface text-[12px] leading-snug text-ink-2", compact ? "px-2.5 py-1.5" : "p-3")}>
       <div className="flex items-center gap-1.5 font-semibold text-ink">
-        <span className="h-1.5 w-1.5 rounded-full bg-brand" />
-        Demo mode
+        <span className={cn("h-1.5 w-1.5 rounded-full", ai ? "bg-ok" : "bg-brand")} />
+        Early access
       </div>
       {!compact && (
         <p className="mt-1 text-muted">
-          AI services are not connected. Analysis is rule-based and projects are saved in this browser.
+          {ai === null ? "Checking AI…" : ai ? "AI photo analysis is on." : "AI photo analysis is not connected yet."} Projects are saved in this browser.
         </p>
       )}
     </div>

@@ -209,6 +209,36 @@ export function PlanStep() {
             </ul>
           </section>
 
+          {/* ── AI observations ── */}
+          {p.aiReading && (
+            <section className="flex flex-col gap-4">
+              <div>
+                <h2 className="text-[17px] font-semibold">What we noticed in your photos</h2>
+                <p className="mt-0.5 text-[13px] text-muted">AI observations to help you check the plan. Light quantities always come from the Neuhom standard.</p>
+              </div>
+              <div className="grid gap-3 md:grid-cols-2">
+                <ul className="flex flex-col gap-2 rounded-lg border border-line bg-surface px-4 py-3.5">
+                  {p.aiReading.reading.observations.map((o, i) => (
+                    <li key={i} className="flex gap-2.5 text-[13.5px] leading-snug">
+                      <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-brass" />
+                      {o.text}
+                    </li>
+                  ))}
+                </ul>
+                {p.aiReading.reading.suggestions.length > 0 && (
+                  <ul className="flex flex-col gap-2 rounded-lg border border-line bg-surface px-4 py-3.5">
+                    {p.aiReading.reading.suggestions.map((sg, i) => (
+                      <li key={i} className="flex gap-2.5 text-[13.5px] leading-snug text-ink-2">
+                        <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full" style={{ background: LAYERS.find((l) => l.value === sg.layer)!.color }} />
+                        {sg.text}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </section>
+          )}
+
           {/* ── Fitting list (BOQ, quantities only) ── */}
           <section className="flex flex-col gap-4">
             <div className="flex flex-wrap items-end justify-between gap-2">
@@ -305,7 +335,7 @@ export function PlanStep() {
                 </div>
               </div>
               <p className="mt-5 text-[11.5px] leading-snug text-muted">
-                Estimated with the lumen method using generic data — not a photometric simulation. Plan based on the details entered; AI photo analysis is not connected.
+                Estimated with the lumen method using generic data — not a photometric simulation. {p.aiReading ? "Room details were checked against an AI reading of your photos; quantities come from the Neuhom standard." : "Plan based on the details entered; photos were not analysed."}
               </p>
             </div>
           </section>
