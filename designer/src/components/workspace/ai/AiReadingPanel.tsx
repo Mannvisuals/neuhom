@@ -22,6 +22,7 @@ export function AiReadingPanel() {
   const update = useWorkspace((s) => s.update);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ErrorState | null>(null);
+  const [skipped, setSkipped] = useState<string[]>([]);
   const stored = p.aiReading ?? null;
   const reading = stored?.reading;
 
@@ -37,6 +38,7 @@ export function AiReadingPanel() {
     setError(null);
     const res = await analyseProject(p);
     setBusy(false);
+    setSkipped(res.ok ? (res.skipped ?? []) : []);
     if (!res.ok) {
       setError(res);
       return;
@@ -110,6 +112,27 @@ export function AiReadingPanel() {
         </div>
       )}
 
+      {skipped.length > 0 && !busy && (
+        <div className="flex gap-2.5 border-b border-line bg-warn-soft px-5 py-3 text-[12.5px] leading-snug text-warn">
+          <TriangleAlert className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+          <span>Not analysed: {skipped.join("; ")}.</span>
+        </div>
+      )}
+
+      {reading && !busy && p.assets.some((a) => a.kind === "floor_plan") && !reading.floorPlan.provided && (
+        <div className="flex gap-2.5 border-b border-line px-5 py-3 text-[12.5px] leading-snug text-ink-2">
+          <TriangleAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted" />
+          <span>Your floor plan couldn&apos;t be read clearly. A sharp, straight-on photo or screenshot with sizes written on it works best.</span>
+        </div>
+      )}
+
+      {reading && !busy && reading.floorPlan.provided && sizes.length === 0 && (
+        <div className="flex gap-2.5 border-b border-line px-5 py-3 text-[12.5px] leading-snug text-ink-2">
+          <Ruler className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted" />
+          <span>We saw your floor plan but found no sizes written on it, so please enter the measurements in the next step.{reading.floorPlan.notes ? ` ${reading.floorPlan.notes}` : ""}</span>
+        </div>
+      )}
+
       {reading && !busy && (
         <div className="flex flex-col divide-y divide-line">
           {reading.observations.length > 0 && (
@@ -135,6 +158,7 @@ export function AiReadingPanel() {
                   return (
                     <li key={s.key} className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-line px-3 py-2 text-[13px]">
                       <span>
+                        {s.matchesProject && <Badge tone="brass" className="mr-1.5">Your room</Badge>}
                         <span className="font-medium">{s.name}</span>{" "}
                         <span className="text-muted">
                           — “{s.writtenAs}” → {formatLength(s.lengthM, p.space.unit)} × {formatLength(s.widthM, p.space.unit)}
@@ -145,7 +169,7 @@ export function AiReadingPanel() {
                           <Check className="h-3.5 w-3.5" /> Used
                         </span>
                       ) : (
-                        <Button size="sm" onClick={() => useSize(s.key)}>
+                        <Button size="sm" variant={s.matchesProject ? "primary" : "secondary"} onClick={() => useSize(s.key)}>
                           Use these sizes
                         </Button>
                       )}

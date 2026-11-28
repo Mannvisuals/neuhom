@@ -5,7 +5,7 @@ import type { AssetMeta, Project } from "@/lib/project/types";
 import type { AnalyseRequest, AnalyseResponse } from "./roomReading";
 
 const MAX_EDGE = 1568;
-const MAX_PDF_BYTES = 2 * 1024 * 1024;
+const MAX_PDF_BYTES = 2.5 * 1024 * 1024;
 /** keep the whole request under the hosting platform's body limit */
 const MAX_TOTAL_BASE64 = 3_800_000;
 
@@ -41,11 +41,12 @@ export function pickAssets(assets: AssetMeta[]): AssetMeta[] {
   return [...plan, ...photos, ...refs].slice(0, 4);
 }
 
-export async function analyseProject(p: Project): Promise<AnalyseResponse & { imageCount?: number }> {
+export async function analyseProject(p: Project): Promise<AnalyseResponse & { imageCount?: number; skipped?: string[] }> {
   const chosen = pickAssets(p.assets);
   if (!chosen.length) return { ok: false, code: "invalid_request", message: "Add a room photo or floor plan first." };
 
   const images: AnalyseRequest["images"] = [];
+  const skipped: string[] = [];
   let total = 0;
   for (const a of chosen) {
     const blob = await repository.getAsset(a.id);
@@ -53,18 +54,24 @@ export async function analyseProject(p: Project): Promise<AnalyseResponse & { im
     let data: string;
     let mediaType: AnalyseRequest["images"][number]["mediaType"];
     if (a.mime === "application/pdf") {
-      if (blob.size > MAX_PDF_BYTES) continue;
+      if (blob.size > MAX_PDF_BYTES) {
+        skipped.push(`${a.name} (PDF over 2.5 MB — upload a screenshot or JPG of the plan instead)`);
+        continue;
+      }
       data = await blobToBase64(blob);
       mediaType = "application/pdf";
     } else {
       data = await blobToBase64(await shrink(blob));
       mediaType = "image/jpeg";
     }
-    if (total + data.length > MAX_TOTAL_BASE64) break;
+    if (total + data.length > MAX_TOTAL_BASE64) {
+      skipped.push(`${a.name} (too much to send at once)`);
+      continue;
+    }
     total += data.length;
     images.push({ kind: a.kind, mediaType, data });
   }
-  if (!images.length) return { ok: false, code: "invalid_request", message: "These files are too large to analyse. Use JPG or PNG photos, or a PDF under 2 MB." };
+  if (!images.length) return { ok: false, code: "invalid_request", message: `Nothing could be sent: ${skipped.join("; ") || "files are too large"}.` };
 
   const body: AnalyseRequest = {
     images,
@@ -72,8 +79,18 @@ export async function analyseProject(p: Project): Promise<AnalyseResponse & { im
   };
   try {
     const res = await fetch("/api/analyse", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
-    const json = (await res.json()) as AnalyseResponse;
-    return { ...json, imageCount: images.length };
+    let json: AnalyseResponse;
+    try {
+      json = (await res.json()) as AnalyseResponse;
+    } catch {
+      // the host returned a non-JSON error page (e.g. timeout or payload too large)
+      return {
+        ok: false,
+        code: "failed",
+        message: res.status === 413 ? "The files were too large to send. Try fewer or smaller photos." : res.status === 504 ? "The analysis took too long. Try again with fewer photos." : `The analysis service returned an error (${res.status}). Please try again.`,
+      };
+    }
+    return { ...json, imageCount: images.length, skipped };
   } catch {
     return { ok: false, code: "failed", message: "Couldn't reach the analysis service. Check your connection and try again." };
   }

@@ -6,7 +6,7 @@ You will receive photos of one room and/or its floor plan. Describe what you can
 Rules:
 - Report only what is visible. If you cannot tell, use "unsure" and low confidence. Never guess to fill a field.
 - Never estimate room dimensions from photos. Photos cannot give reliable sizes.
-- Floor plans: copy dimensions only if they are written on the drawing. Put the exact text in writtenAs and convert to decimal feet (12'6" = 12.5; metres × 3.281). If no dimension is written, set lengthFt and widthFt to null. Never measure or scale the drawing yourself.
+- Floor plans: list every room that has a written dimension. If the plan shows several rooms (a whole flat), set matchesProject to true for the single room that best matches the user's space type (e.g. the living room for a living-room project) and false for the others; if none clearly matches, all false. Copy dimensions only if they are written on the drawing. Put the exact text in writtenAs and convert to decimal feet (12'6" = 12.5; metres × 3.281). If no dimension is written, set lengthFt and widthFt to null. Never measure or scale the drawing yourself.
 - Ceiling: "false_ceiling" means a gypsum/POP dropped ceiling (recessed lights, coves, bulkheads, steps are typical signs). "flat_slab" means a plain plastered RCC ceiling with surface lights or a fan box. Explain the visual evidence briefly.
 - Walls: classify the dominant wall finish. Floor: the dominant floor finish.
 - existingLights: describe current light fittings and fans in plain words; count ceiling light/fan points only if clearly countable.

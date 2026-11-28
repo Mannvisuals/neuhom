@@ -117,6 +117,7 @@ export function buildSuggestions(r: RoomReading, p: Project): Suggestion[] {
 export interface PlanRoomSize {
   key: string;
   name: string;
+  matchesProject: boolean;
   writtenAs: string;
   lengthM: number;
   widthM: number;
@@ -130,8 +131,9 @@ export function planSizes(r: RoomReading): PlanRoomSize[] {
     .map((room, i) => {
       const a = room.lengthFt! / FT;
       const b = room.widthFt! / FT;
-      return { key: `plan-${i}`, name: room.name, writtenAs: room.writtenAs, lengthM: Math.max(a, b), widthM: Math.min(a, b) };
-    });
+      return { key: `plan-${i}`, name: room.name, matchesProject: room.matchesProject, writtenAs: room.writtenAs, lengthM: Math.max(a, b), widthM: Math.min(a, b) };
+    })
+    .sort((x, y) => Number(y.matchesProject) - Number(x.matchesProject));
 }
 
 export function applyPlanSize(p: Project, s: PlanRoomSize): Project {

@@ -54,6 +54,8 @@ export const roomReadingSchema = z.object({
         writtenAs: z.string(),
         lengthFt: z.number().nullable(),
         widthFt: z.number().nullable(),
+        /** true for the room on the plan that best matches the project's space */
+        matchesProject: z.boolean(),
       }),
     ),
     notes: z.string(),
@@ -96,5 +98,5 @@ export const analyseRequestSchema = z.object({
 export type AnalyseRequest = z.infer<typeof analyseRequestSchema>;
 
 export type AnalyseResponse =
-  | { ok: true; reading: RoomReading; model: string }
+  | { ok: true; reading: RoomReading; model: string; skipped?: string[] }
   | { ok: false; code: "not_configured" | "rate_limited" | "invalid_request" | "refused" | "failed"; message: string };

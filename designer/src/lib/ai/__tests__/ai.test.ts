@@ -22,7 +22,7 @@ const reading = (over: Partial<RoomReading> = {}): RoomReading =>
     activities: ["reading", "display"],
     observations: [{ text: "Plain plastered ceiling", confidence: "high" }],
     suggestions: [{ text: "Wash the painting with an adjustable spot", layer: "accent" }],
-    floorPlan: { provided: true, rooms: [{ name: "Living", writtenAs: "18'0\" x 13'6\"", lengthFt: 18, widthFt: 13.5 }, { name: "Store", writtenAs: "?", lengthFt: null, widthFt: null }], notes: "" },
+    floorPlan: { provided: true, rooms: [{ name: "Store", writtenAs: "6x5", lengthFt: 6, widthFt: 5, matchesProject: false }, { name: "Living", writtenAs: "18'0\" x 13'6\"", lengthFt: 18, widthFt: 13.5, matchesProject: true }, { name: "Loft", writtenAs: "?", lengthFt: null, widthFt: null, matchesProject: false }], notes: "" },
     ...over,
   });
 
@@ -62,9 +62,11 @@ describe("AI suggestions", () => {
 });
 
 describe("floor-plan sizes", () => {
-  it("uses only dimensions written on the plan, longest side as length", () => {
+  it("uses only dimensions written on the plan, longest side as length, matching room first", () => {
     const sizes = planSizes(reading());
-    expect(sizes).toHaveLength(1);
+    expect(sizes).toHaveLength(2); // the loft has no written size
+    expect(sizes[0]!.name).toBe("Living");
+    expect(sizes[0]!.matchesProject).toBe(true);
     expect(sizes[0]!.lengthM).toBeCloseTo(18 / 3.28084, 4);
     expect(sizes[0]!.widthM).toBeCloseTo(13.5 / 3.28084, 4);
     const p = applyPlanSize(project(), sizes[0]!);
