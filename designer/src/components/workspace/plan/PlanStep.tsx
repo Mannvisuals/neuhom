@@ -71,7 +71,7 @@ export function PlanStep() {
   const unit = p.space.unit;
   const lines = fittingList(design, p);
   const sentences = describeLights(design, p);
-  const bright = brightnessWord(metrics.ambient.state, metrics.ambient.achievedLux, metrics.ambient.targetLux);
+  const bright = brightnessWord(metrics.state, metrics.density.effective, metrics.density.target);
   const colour = colourWord(design.cct);
   const featureLabel = FEATURE_WALL_SHORT[p.spaceType] ?? "Feature wall";
   const waText = whatsappMessage(design, p, metrics, (m) => formatLength(m, unit));
@@ -181,7 +181,7 @@ export function PlanStep() {
 
             <div className="flex flex-col gap-6">
               <Panel className="divide-y divide-line">
-                <Feel label="Brightness" value={bright.label} note={bright.note} tone={metrics.ambient.state === "ok" ? "ok" : "warn"} />
+                <Feel label="Brightness" value={bright.label} note={bright.note} tone={metrics.state === "ok" ? "ok" : "warn"} />
                 <Feel label="Light colour" value={colour.label} note={colour.note} swatch={design.cct} />
                 <Feel label="Electricity" value={`About ₹${(Math.round(metrics.annualCost / 100) * 100 || metrics.annualCost).toLocaleString("en-IN")} a year`} note={`${Math.round(metrics.connectedLoadW)} W when everything is on`} />
               </Panel>
@@ -271,8 +271,9 @@ export function PlanStep() {
               <ChevronDown className={cn("h-4 w-4 text-muted transition-transform", techOpen && "rotate-180")} />
             </button>
             <div className={cn("border-t border-line px-5 py-5", !techOpen && "hidden print:block")}>
-              <dl className="grid grid-cols-2 gap-x-6 gap-y-4 text-[13px] sm:grid-cols-4">
-                <Tech label="Average light level" value={`${metrics.ambient.achievedLux} lux`} sub={`target ${metrics.ambient.targetLux}, range ${metrics.ambient.min}–${metrics.ambient.max}`} />
+              <dl className="grid grid-cols-2 gap-x-6 gap-y-4 text-[13px] sm:grid-cols-3 lg:grid-cols-5">
+                <Tech label="General light" value={`${Math.round(metrics.density.effective)} lm/sq ft`} sub={`Neuhom standard ${metrics.density.min}–${metrics.density.max}`} />
+                <Tech label="Average light level" value={`${metrics.ambient.achievedLux} lux`} sub={`all lights on; workplace guidance ${metrics.ambient.min}–${metrics.ambient.max}`} />
                 <Tech label="Colour temperature" value={`${design.cct} K`} sub={`${std.cct.min}–${std.cct.max} K for this room`} />
                 <Tech label="Connected load" value={`${Math.round(metrics.connectedLoadW)} W`} sub={`${metrics.lpdWPerM2} W/m²`} />
                 <Tech label="Energy" value={`${Math.round(metrics.annualKWh)} kWh/yr`} sub={`≈ ₹${metrics.annualCost.toLocaleString("en-IN")} at ₹8/kWh`} />

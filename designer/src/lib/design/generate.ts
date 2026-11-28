@@ -7,11 +7,12 @@
  */
 import {
   calculateAccent,
-  calculateAmbient,
   calculateCove,
+  calculateDensityAmbient,
   calculateTask,
   maintenanceFactor,
   DEFAULT_CONFIG,
+  type DensityResult,
   type FixtureSpec,
   type ResolvedRoom,
 } from "@/lib/lighting";
@@ -24,9 +25,6 @@ import { pointOnWall, resolveProjectRoom, toRoomInput, wallGeometry } from "./ro
 import { LAYERS, type Concept, type Design, type Layer, type PlacedFixture } from "./types";
 
 const round = (v: number, dp = 3) => Math.round(v * 10 ** dp) / 10 ** dp;
-
-/** Largest share of the ambient target a cove may cover when sizing downlights. */
-export const MAX_COVE_SHARE = 0.5;
 
 let idCounter = 0;
 export const newId = (prefix = "f") => `${prefix}_${Date.now().toString(36)}${(idCounter++).toString(36)}${Math.random().toString(36).slice(2, 6)}`;
@@ -101,31 +99,28 @@ export function generateDesign(project: Project, concept: Concept = "tailored"):
     rationale.push(`Cove lighting (${strip.lumens} lm/m) around the ceiling edge adds about ${coveLux} lux of soft, indirect light.`);
   }
 
-  // ── Ambient grid ─────────────────────────────────────────────────────
-  const candidates = fittingsOfType(prefs.ambientType);
-  // Coves are mood light on their own switch: downlights always provide at least
-  // half of the general light so the room is usable with the cove off.
+  // ── Ambient grid — sized by the Neuhom standard (lumens per sq ft) ───
+  // The cove is mood light on its own switch and is not counted here, so the
+  // room is properly lit with the cove off.
   const targetLux = Math.round(
     Math.min(std.ambient.max, Math.max(std.ambient.min, std.ambient.target * DEFAULT_CONFIG.brightnessMultiplier[prefs.brightness])),
   );
-  const coveCredit = Math.min(coveLux, targetLux * MAX_COVE_SHARE);
-  let best: { ref: ReferenceFitting; result: ReturnType<typeof calculateAmbient>; total: number; score: number } | undefined;
+  const candidates = fittingsOfType(prefs.ambientType);
+  let best: { ref: ReferenceFitting; result: DensityResult; score: number } | undefined;
   for (const ref of candidates) {
-    const result = calculateAmbient({ room: roomInput, fixture: toSpec(ref), brightness: prefs.brightness, otherAmbientLux: coveCredit });
-    // everything on: downlights plus the cove's full output
-    const total = result.achievedLux - coveCredit + coveLux;
-    const inRange = total >= std.ambient.min && total <= std.ambient.max;
-    const tooDense = result.warnings.some((w) => w.code === "too_dense");
-    const score = (inRange ? 0 : 1000) + (tooDense ? 500 : 0) + result.quantity * 3 + (Math.abs(total - targetLux) / targetLux) * 20;
-    if (!best || score < best.score) best = { ref, result, total, score };
+    const result = calculateDensityAmbient({ room: roomInput, fixture: toSpec(ref), brightness: prefs.brightness });
+    const score =
+      (result.state === "ok" ? 0 : 1000) +
+      (result.layout?.tooDense ? 500 : 0) +
+      result.quantity * 3 +
+      (Math.abs(result.effectiveDensity - result.targetDensity) / result.targetDensity) * 20;
+    if (!best || score < best.score) best = { ref, result, score };
   }
-  const ambientTarget = best!.result.target.lux;
-  let ambientLux = coveLux;
   if (best && best.result.layout) {
-    for (const p of best.result.layout.positions) drafts.push(fromReference(best.ref, "ambient", prefs, p));
-    ambientLux = Math.round(best.total);
+    const r = best.result;
+    for (const p of r.layout!.positions) drafts.push(fromReference(best.ref, "ambient", prefs, p));
     rationale.push(
-      `${best.result.quantity} × ${best.ref.label.toLowerCase()} on a ${best.result.layout.cols} × ${best.result.layout.rows} grid give about ${ambientLux} lux (target ${ambientTarget}).`,
+      `${r.quantity} × ${best.ref.label.toLowerCase()} on a ${r.layout!.cols} × ${r.layout!.rows} grid give about ${Math.round(r.effectiveDensity)} lumens per sq ft — the Neuhom standard for this room is ${r.range.min}–${r.range.max}.`,
     );
   }
 
@@ -231,6 +226,7 @@ export function generateDesign(project: Project, concept: Concept = "tailored"):
     fixtures: assignCodes(drafts.map((d) => roundDraft(d, room))),
     rationale,
     edited: false,
+    method: "density",
     inputs: designInputs(project),
   };
 }

@@ -45,7 +45,7 @@ export function colourWord(k: number): { label: string; note: string } {
   return { label: "Neutral white", note: "crisp and clear, good for tasks" };
 }
 
-export function brightnessWord(state: DesignMetrics["ambient"]["state"], achieved: number, target: number): { label: string; note: string } {
+export function brightnessWord(state: DesignMetrics["state"], achieved: number, target: number): { label: string; note: string } {
   if (state === "low") return { label: "A bit dim", note: "add a few lights or choose brighter ones in Customise" };
   if (state === "high") return { label: "Very bright", note: "consider dimmers or fewer lights" };
   if (achieved > target * 1.2) return { label: "Bright", note: "comfortably bright for this room" };

@@ -19,3 +19,5 @@ export { calculateTask, LOCAL_UTILISATION, type TaskResult } from "./task";
 export { calculateAccent, type AccentInput, type AccentResult } from "./accent";
 export { calculateCove, type CoveInput, type CoveResult } from "./cove";
 export { ambientInputSchema, roomInputSchema, fixtureSpecSchema } from "./schema";
+export { calculateDensityAmbient, densityState, roomAdjustment, SQFT_PER_M2, type DensityResult } from "./density";
+export { LUMEN_DENSITY, NEUHOM_STANDARD_VERSION, type DensityRange } from "./config/density";

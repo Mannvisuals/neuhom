@@ -41,7 +41,7 @@ describe("design generation", () => {
     const d = generateDesign(p);
     const m = evaluateDesign(p, d);
     expect(d.fixtures.length).toBeGreaterThan(0);
-    expect(m.ambient.state, `${spaceType}: ${m.ambient.achievedLux} lx`).toBe("ok");
+    expect(m.state, `${spaceType}: ${m.density.effective} lm/sq ft`).toBe("ok");
     for (const f of d.fixtures) {
       expect(f.x).toBeGreaterThanOrEqual(0);
       expect(f.x).toBeLessThanOrEqual(m.room.length);
@@ -82,12 +82,12 @@ describe("design generation", () => {
     expect(generateDesign(project("kitchen"), "bright_contemporary").cct).toBe(4000);
     expect(minimal.fixtures.some((f) => f.layer === "accent" || f.type === "cove")).toBe(false);
     expect(cosy.fixtures.some((f) => f.type === "cove")).toBe(true);
-    expect(evaluateDesign(p, bright).ambient.achievedLux).toBeGreaterThan(evaluateDesign(p, cosy).ambient.achievedLux);
+    expect(evaluateDesign(p, bright).density.effective).toBeGreaterThan(evaluateDesign(p, cosy).density.effective);
   });
 
   it("every concept keeps ambient light within range in a typical living room", () => {
     const p = project("living_room");
-    for (const c of CONCEPTS) expect(evaluateDesign(p, generateDesign(p, c.value)).ambient.state, c.value).toBe("ok");
+    for (const c of CONCEPTS) expect(evaluateDesign(p, generateDesign(p, c.value)).state, c.value).toBe("ok");
   });
 
   it("respects manually chosen fixture types", () => {
@@ -104,9 +104,9 @@ describe("design evaluation", () => {
     const p = project("living_room");
     const d = generateDesign(p, "minimal_functional");
     const base = evaluateDesign(p, d);
-    const fewer = evaluateDesign(p, { ...d, fixtures: d.fixtures.slice(0, 2) });
+    const fewer = evaluateDesign(p, { ...d, fixtures: d.fixtures.slice(0, 1) });
     expect(fewer.ambient.achievedLux).toBeLessThan(base.ambient.achievedLux);
-    expect(fewer.ambient.state).toBe("low");
+    expect(fewer.state).toBe("low");
     expect(fewer.connectedLoadW).toBeLessThan(base.connectedLoadW);
     expect(fewer.warnings.some((w) => /below/.test(w.message))).toBe(true);
   });

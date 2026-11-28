@@ -38,17 +38,17 @@ describe("generic fittings reflect current LED efficiency", () => {
 });
 
 describe("practical fitting counts", () => {
-  it("15 × 10 ft office without false ceiling: ≤ 9 downlights, ≤ 160 W (was 15 × 18 W = 270 W)", () => {
+  it("15 × 10 ft office without false ceiling: ≤ 6 downlights, ≤ 90 W (was 15 × 18 W = 270 W)", () => {
     const r = ambientDownlights(room("office", 15, 10, 10, { ceilingType: "exposed_concrete", wallFinish: "white", floorFinish: "dark_stone_or_wood" }, { brightness: "soft" }));
-    expect(r.count).toBeLessThanOrEqual(9);
-    expect(r.watts).toBeLessThanOrEqual(160);
-    expect(r.m.ambient.state).toBe("ok");
+    expect(r.count).toBeLessThanOrEqual(6);
+    expect(r.watts).toBeLessThanOrEqual(90);
+    expect(r.m.state).toBe("ok");
   });
 
-  it("15 × 10 ft office with false ceiling: a handful of panels", () => {
+  it("15 × 10 ft office with false ceiling: 2–4 panels", () => {
     const r = ambientDownlights(room("office", 15, 10, 9.5));
-    expect(r.count).toBeGreaterThanOrEqual(3);
-    expect(r.count).toBeLessThanOrEqual(6);
+    expect(r.count).toBeGreaterThanOrEqual(2);
+    expect(r.count).toBeLessThanOrEqual(4);
   });
 
   it("12 × 10 ft bedroom: 4–6 small downlights, ≤ 45 W of downlights", () => {
@@ -64,7 +64,7 @@ describe("practical fitting counts", () => {
     const r = ambientDownlights(room("living_room", 18, 13, 9.5));
     expect(r.count).toBeLessThanOrEqual(9);
     expect(r.m.lpdWPerM2).toBeLessThanOrEqual(9);
-    expect(r.m.ambient.state).toBe("ok");
+    expect(r.m.state).toBe("ok");
   });
 
   it("10 × 8 ft kitchen: ≤ 6 downlights", () => {
@@ -82,9 +82,26 @@ describe("practical fitting counts", () => {
     }
   });
 
-  it("all-on general light stays inside the recommended range for common rooms", () => {
-    for (const [s, L, W] of [["bedroom", 12, 10], ["living_room", 18, 13], ["dining_room", 12, 10], ["kitchen", 10, 8], ["office", 15, 10]] as const) {
-      expect(ambientDownlights(room(s, L, W, 9.5)).m.ambient.state, s).toBe("ok");
+  it("general light lands inside the Neuhom standard for common rooms and every style", () => {
+    for (const [s, L, W] of [["bedroom", 12, 10], ["living_room", 18, 13], ["dining_room", 12, 10], ["kitchen", 10, 8], ["office", 15, 10], ["bathroom", 8, 6]] as const) {
+      for (const c of ["tailored", "warm_cosy", "minimal_functional", "premium_architectural", "bright_contemporary"] as const) {
+        const r = ambientDownlights(room(s, L, W, 9.5), c);
+        expect(r.m.state, `${s} ${c}: ${r.m.density.effective} lm/sq ft`).toBe("ok");
+      }
     }
+  });
+
+  it("matches the market rule of thumb (area × lm/sq ft) within one fitting", () => {
+    // 18 × 13 ft living room at 10–20 lm/sq ft → 2,340–4,680 lm of general light
+    const r = ambientDownlights(room("living_room", 18, 13, 9.5));
+    const lm = r.d.fixtures.filter((f) => f.layer === "ambient" && f.x2 === undefined).reduce((s, f) => s + f.lumens, 0);
+    expect(lm).toBeGreaterThanOrEqual(2340);
+    expect(lm).toBeLessThanOrEqual(4680 * 1.1);
+  });
+
+  it("10 × 8 ft kitchen stays inside 30–40 lm/sq ft", () => {
+    const r = ambientDownlights(room("kitchen", 10, 8, 9.5));
+    expect(r.m.density.effective).toBeGreaterThanOrEqual(30 * 0.95);
+    expect(r.m.density.effective).toBeLessThanOrEqual(40 * 1.1);
   });
 });

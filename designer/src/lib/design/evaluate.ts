@@ -18,6 +18,11 @@ import {
   type Assumption,
   type CalculationQuality,
   type ResolvedRoom,
+  LUMEN_DENSITY,
+  NEUHOM_STANDARD_VERSION,
+  SQFT_PER_M2,
+  densityState,
+  roomAdjustment,
 } from "@/lib/lighting";
 import { assessQuality } from "@/lib/lighting/quality";
 import type { Project } from "@/lib/project/types";
@@ -40,6 +45,23 @@ export interface DesignMetrics {
     state: "low" | "ok" | "high";
     fromCoveLux: number;
   };
+  /**
+   * Neuhom standard check: general-light lumens per sq ft from ambient
+   * ceiling fittings (cove excluded), against the room's range.
+   */
+  density: {
+    achieved: number;
+    effective: number;
+    target: number;
+    min: number;
+    max: number;
+    adjustment: number;
+    state: "low" | "ok" | "high";
+  };
+  /** which check decides "too dim / too bright": the design's sizing method */
+  method: "density" | "lux";
+  /** state from the design's method — use this for the headline verdict */
+  state: "low" | "ok" | "high";
   counts: Record<Layer, number>;
   totalFixtures: number;
   totalLinearMetres: number;
@@ -102,8 +124,27 @@ export function evaluateDesign(project: Project, design: Design): DesignMetrics 
     Math.min(std.ambient.max, Math.max(std.ambient.min, std.ambient.target * cfg.brightnessMultiplier[design.brightness])),
   );
   const state = achievedLux < std.ambient.min ? "low" : achievedLux > std.ambient.max ? "high" : "ok";
-  if (state === "low") warnings.push({ severity: "warning", message: `General light is about ${achievedLux} lux — below the ${std.ambient.min} lux minimum for a ${std.label.toLowerCase()}. Add ambient fittings or raise their output.` });
-  if (state === "high") warnings.push({ severity: "warning", message: `General light is about ${achievedLux} lux — above the ${std.ambient.max} lux comfortable maximum. Remove fittings, lower output or add dimming.` });
+
+  // ── Neuhom standard: lumens per sq ft from ambient ceiling fittings ──
+  const range = LUMEN_DENSITY[project.spaceType];
+  const areaSqFt = room.area * SQFT_PER_M2;
+  const pointLm = design.fixtures.filter((f) => f.layer === "ambient" && !isLinear(f) && f.mounting !== "cove").reduce((s, f) => s + f.lumens, 0);
+  const adj = roomAdjustment(room, project.space.wallFinish).total;
+  const achievedDensity = pointLm / areaSqFt;
+  const effective = achievedDensity / adj;
+  const densityTarget = Math.round(Math.min(range.max, Math.max(range.min, range.target * cfg.brightnessMultiplier[design.brightness])) * 10) / 10;
+  const dState = densityState(effective, range);
+  const method = design.method ?? "lux";
+  const primary = method === "density" ? dState : state;
+
+  if (method === "density") {
+    const d = Math.round(effective);
+    if (dState === "low") warnings.push({ severity: "warning", message: `General light is about ${d} lumens per sq ft — below the Neuhom standard of ${range.min}–${range.max} for this room. Add ceiling lights or choose brighter ones.` });
+    if (dState === "high") warnings.push({ severity: "warning", message: `General light is about ${d} lumens per sq ft — above the Neuhom standard of ${range.min}–${range.max} for this room. Remove lights, lower their output or add dimming.` });
+  } else {
+    if (state === "low") warnings.push({ severity: "warning", message: `General light is about ${achievedLux} lux — below the ${std.ambient.min} lux minimum for a ${std.label.toLowerCase()}. Add ambient fittings or raise their output.` });
+    if (state === "high") warnings.push({ severity: "warning", message: `General light is about ${achievedLux} lux — above the ${std.ambient.max} lux comfortable maximum. Remove fittings, lower output or add dimming.` });
+  }
 
   // ── Placement checks ──
   for (const f of design.fixtures) {
@@ -133,6 +174,13 @@ export function evaluateDesign(project: Project, design: Design): DesignMetrics 
     cfg,
   );
 
+  log.add({
+    id: "standard.density",
+    label: "Neuhom standard for this room",
+    value: `${range.min}–${range.max} lm/sq ft`,
+    source: "neuhom_default",
+    note: `${NEUHOM_STANDARD_VERSION}. General ceiling light only; cove, task and accent lights are extra.`,
+  });
   log.add({ id: "calc.uf", label: "Utilisation factors", value: "generic model", source: "generic_model", note: "Generic light-distribution families; replaced by photometric data when real products are chosen." });
   log.add({ id: "calc.mf", label: "Maintenance factor", value: mf, source: "generic_model", note: `5-year LED depreciation and dust for a ${room.environment} environment.` });
   if (design.fixtures.some((f) => f.specSource === "generic_reference")) {
@@ -144,6 +192,17 @@ export function evaluateDesign(project: Project, design: Design): DesignMetrics 
   return {
     room,
     ambient: { achievedLux, targetLux, min: std.ambient.min, max: std.ambient.max, state, fromCoveLux },
+    density: {
+      achieved: Math.round(achievedDensity * 10) / 10,
+      effective: Math.round(effective * 10) / 10,
+      target: densityTarget,
+      min: range.min,
+      max: range.max,
+      adjustment: adj,
+      state: dState,
+    },
+    method,
+    state: primary,
     counts,
     totalFixtures: counts.ambient + counts.task + counts.accent + counts.decorative,
     totalLinearMetres: Math.round(linearM * 10) / 10,

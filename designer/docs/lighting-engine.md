@@ -20,7 +20,14 @@ that with standard lighting-engineering formulas, not with AI.
   - `estimate` — lumen-method result from the user's measurements
   - `photometric` — reserved for the future, when real IES/LDT files are used
 
-## How a calculation works
+## Two sizing methods
+- **Homeowner plans** size general light with the **Neuhom Lighting Standard**
+  (lumens per sq ft by room) — see `docs/neuhom-lighting-standard.md` and
+  `density.ts`. This matches how consumer tools and Indian electricians work.
+- **Professional cross-check** (shown in the editor and technical details):
+  the lux-based lumen method below.
+
+## How the lux calculation works
 
 ### 1. Target illuminance — `config/illuminance.ts`
 Each space type has a maintained-illuminance range (min / target / max), task

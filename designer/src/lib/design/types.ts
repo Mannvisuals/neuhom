@@ -57,6 +57,12 @@ export interface Design {
   /** plain-language reasons for the main choices */
   rationale: string[];
   edited: boolean;
+  /**
+   * How general light was sized: "density" = Neuhom standard (lumens per sq ft,
+   * homeowner plans); "lux" = lumen method against illuminance targets.
+   * Designs saved before this field existed were sized by lux.
+   */
+  method?: "density" | "lux";
   /** fingerprint of the project inputs the design was generated from */
   inputs?: string;
 }

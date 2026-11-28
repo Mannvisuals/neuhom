@@ -31,7 +31,13 @@ export function SummaryPanel({
   onRestore: (id: string) => void;
 }) {
   const a = m.ambient;
-  const scaleMax = Math.max(a.max * 1.25, a.achievedLux * 1.05);
+  const d = m.density;
+  const byDensity = m.method === "density";
+  // headline metric follows how the design was sized
+  const h = byDensity
+    ? { value: Math.round(d.effective), unit: "lm per sq ft", min: d.min, max: d.max, target: d.target, rangeUnit: "lm/sq ft", label: "Neuhom standard" }
+    : { value: a.achievedLux, unit: "lux average", min: a.min, max: a.max, target: a.targetLux, rangeUnit: "lx", label: "Recommended" };
+  const scaleMax = Math.max(h.max * 1.25, h.value * 1.05);
   const pct = (v: number) => `${Math.min(100, (v / scaleMax) * 100)}%`;
   const concept = CONCEPTS.find((c) => c.value === design.concept);
 
@@ -51,26 +57,38 @@ export function SummaryPanel({
           )}
         </div>
         <div className="mt-2 flex items-baseline gap-2">
-          <span className="text-[40px] font-semibold leading-none tracking-[-0.03em] tabular">{a.achievedLux}</span>
-          <span className="text-[13px] text-muted">lux average</span>
+          <span className="text-[40px] font-semibold leading-none tracking-[-0.03em] tabular">{h.value}</span>
+          <span className="text-[13px] text-muted">{h.unit}</span>
         </div>
         <div className="relative mt-4 h-2 rounded-full bg-sunken" aria-hidden>
-          <div className="absolute inset-y-0 rounded-full bg-ok-soft" style={{ left: pct(a.min), width: `calc(${pct(a.max)} - ${pct(a.min)})` }} />
+          <div className="absolute inset-y-0 rounded-full bg-ok-soft" style={{ left: pct(h.min), width: `calc(${pct(h.max)} - ${pct(h.min)})` }} />
           <div
-            className={cn("absolute top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-surface shadow", a.state === "ok" ? "bg-ok" : "bg-warn")}
-            style={{ left: pct(a.achievedLux) }}
+            className={cn("absolute top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-surface shadow", m.state === "ok" ? "bg-ok" : "bg-warn")}
+            style={{ left: pct(h.value) }}
           />
-          <div className="absolute -top-1 h-4 w-px bg-ink" style={{ left: pct(a.targetLux) }} />
+          <div className="absolute -top-1 h-4 w-px bg-ink" style={{ left: pct(h.target) }} />
         </div>
         <div className="mt-2 flex justify-between text-[11.5px] text-muted tabular">
           <span>
-            Range {a.min}–{a.max} lx
+            {h.label} {h.min}–{h.max} {h.rangeUnit}
           </span>
-          <span>Target {a.targetLux} lx</span>
+          <span>
+            Target {h.target} {h.rangeUnit}
+          </span>
         </div>
-        <p className={cn("mt-3 text-[12.5px] leading-snug", a.state === "ok" ? "text-ok" : "text-warn")}>
-          {a.state === "ok" ? "Within the recommended range." : a.state === "low" ? "Below the recommended range." : "Above the recommended range."}
-          {a.fromCoveLux > 0 && <span className="text-muted"> Cove contributes {a.fromCoveLux} lx.</span>}
+        <p className={cn("mt-3 text-[12.5px] leading-snug", m.state === "ok" ? "text-ok" : "text-warn")}>
+          {m.state === "ok" ? "Within the range for this room." : m.state === "low" ? "Below the range for this room." : "Above the range for this room."}
+          <span className="text-muted"> Ceiling lights only — cove, task and accent lights are extra.</span>
+        </p>
+        <p className="mt-2 text-[11.5px] leading-snug text-muted tabular">
+          {byDensity ? (
+            <>
+              Cross-check: about {a.achievedLux} lux average with everything on (workplace guidance {a.min}–{a.max} lux).
+            </>
+          ) : (
+            <>Neuhom standard: {Math.round(d.effective)} lm/sq ft (range {d.min}–{d.max}).</>
+          )}
+          {a.fromCoveLux > 0 && <> Cove adds about {a.fromCoveLux} lux.</>}
         </p>
       </div>
 
